@@ -4,7 +4,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserOrmEntity } from '../entities/use-orm.entity';
 import { User } from '../../domain/entities/user.entity';
-import { DataSource } from 'typeorm/browser';
+import { DataSource } from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
 
 interface RoleQueryResult {
   role: string;
@@ -44,16 +45,18 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
     orm.id = user.id;
     orm.email = user.email;
     orm.fullName = user.fullName;
+    orm.passwordHash = user.passwordHash,
     orm.isActive = user.isActive;
     orm.currentGradeId = user.currentGradeId!;
     return orm;
   }
 
   // Función de mapeo (ORM Entity -> Domain Entity)
-  private toDomainEntity(ormUser: UserOrmEntity, role: string): User {
+  private toDomainEntity(ormUser: UserOrmEntity, role: string, passwordHash?: string): User {
     return {
       ...ormUser,
       fullName: ormUser.fullName,
+      passwordHash: passwordHash || '',
       role: role as User['role'], // Mapeamos el string del rol a nuestro Enum
     };
   }
@@ -65,6 +68,7 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
   async findByEmail(email: string): Promise<User | null> {
     const ormUser = await this.profilesRepository.findOne({
       where: { email },
+      select: ['id', 'email', 'fullName', 'isActive', 'currentGradeId', 'passwordHash', 'createdAt', 'updatedAt'] as (keyof UserOrmEntity)[]
     });
 
     if (!ormUser) {
@@ -147,6 +151,12 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
   }
 
   async save(user: User): Promise<User> {
+    // Generamos la clave UUID para nuevos usuarios
+    if(user.id === '') {
+      user.id = uuidv4();
+      user.createdAt = new Date();
+      user.updatedAt = new Date();
+    }
     const ormUser = this.toOrmEntity(user);
 
     // Usamos una transacción para garantizar que profiles y user_roles se actualicen juntos
