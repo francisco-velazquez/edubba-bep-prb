@@ -5,6 +5,7 @@ import { LoginResult } from "../../domain/types/jwt-payload.type";
 import { RegisterDto } from "../../application/dtos/register.dto";
 import { UserResponseDto } from "src/app/modules/users/application/dtos/user-response.dto";
 import { RegisterUserUseCase } from "../../application/use-cases/register-user.use-case";
+import { ApiOperation } from "@nestjs/swagger";
 
 @Controller('auth')
 export class AuthController {
@@ -14,6 +15,10 @@ export class AuthController {
   ) {}
 
   @Post('login')
+  @ApiOperation({
+    summary: 'Método para inicio de sesión en la aplicación',
+    description: 'Permite el inicio de sesión dentro de la aplicación'
+  })
   @HttpCode(HttpStatus.OK)
   async login(@Body() dto: LoginDto): Promise<LoginResult> {
     // El dto ya fue validado por los pipes globales
@@ -21,6 +26,10 @@ export class AuthController {
   }
 
   @Post('register')
+  @ApiOperation({
+    summary: 'Crea un nuevo usuario',
+    description: 'Registro de un nuevo usuario'
+  })
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() dto: RegisterDto): Promise<UserResponseDto> {
     return this.registerUserUseCase.execute(dto);

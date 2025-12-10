@@ -8,6 +8,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { GradeModule } from './modules/grades/grade.module';
 
 @Module({
   imports: [
@@ -50,6 +51,9 @@ import { AuthModule } from './modules/auth/auth.module';
 
     // Módulo de Usuarios
     UsersModule,
+
+    // Módulo de grados academicos
+    GradeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
