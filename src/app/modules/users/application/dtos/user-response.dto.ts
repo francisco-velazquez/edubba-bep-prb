@@ -14,7 +14,7 @@ export class UserResponseDto {
     this.email = user.email;
     this.firstName = user.firstName;
     this.lastName = user.lastName;
-    this.role = user.role;
+    this.role = user.role!;
     this.dateOfBirth = user.dateOfBirth;
   }
 }

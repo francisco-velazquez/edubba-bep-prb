@@ -11,7 +11,7 @@ export interface User {
   dateOfBirth: Date;
 
   // Datos del rol (user_roles)
-  role: UserRole;
+  role?: UserRole;
 
   createdAt: Date;
   updatedAt: Date;

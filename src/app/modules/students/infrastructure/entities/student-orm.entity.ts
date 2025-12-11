@@ -5,7 +5,7 @@ import { UserOrmEntity } from 'src/app/modules/users/infrastructure/entities/use
 @Entity('students') // Nombre de la tabla en la base de datos
 export class StudentOrmEntity {
   @PrimaryColumn({ type: 'uuid', name: 'user_id' })
-  id: string; // Relación 1:1 con User
+  userId: string; // Relación 1:1 con User
 
   @Column({ name: 'enrollment_code', unique: true })
   enrollmentCode: string;

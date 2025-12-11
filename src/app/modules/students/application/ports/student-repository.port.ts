@@ -1,14 +1,16 @@
-import { Student, StudentId } from '../../domain/student.type';
+import { Student, StudentId } from '../../domain/student.entity';
 
-export const I_STUDENT_REPOSITORY = 'IStudentRepository';
-
-export interface IStudentRepository {
-  save(student: Partial<Student>): Promise<Student>;
+export interface IStudentRepositoryPort {
+  save(student: Student): Promise<Student>;
   
   findAll(): Promise<Student[]>;
   
-  findById(id: StudentId): Promise<Student | null>;
+  findById(userId: string): Promise<Student | null>;
   
   // Usaremos softDelete para la baja lógica
-  softDelete(id: StudentId): Promise<void>; 
+  updateGrade(userId: string, gradeId: number): Promise<Student>; 
+}
+
+export function I_STUDENT_REPOSITORY(I_STUDENT_REPOSITORY: any): (target: typeof import("../use-cases/create-student.use-case").CreateStudentUseCase, propertyKey: undefined, parameterIndex: 0) => void {
+  throw new Error('Function not implemented.');
 }

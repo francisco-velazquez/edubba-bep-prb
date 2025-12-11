@@ -34,7 +34,7 @@ export class LoginUserUseCase {
     const payload: JwtPayload = {
       sub: user.id,
       email: user.email,
-      role: user.role,
+      role: user.role!,
     };
 
     // Generamos el token a travez del port

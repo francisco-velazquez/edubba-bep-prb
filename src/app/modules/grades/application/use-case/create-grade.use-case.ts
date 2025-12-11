@@ -17,6 +17,7 @@ export class CreateGradeUseCase {
       name: dto.name,
       level: dto.level,
       code: dto.code,
+      isActive: true,
     });
 
     return this.gradeRepository.save(newGrade);

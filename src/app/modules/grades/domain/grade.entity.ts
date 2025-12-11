@@ -5,6 +5,7 @@ export class GradeEntity implements Grade {
   name: string;
   level: GradeLevel;
   code: string;
+  isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
 
@@ -12,6 +13,7 @@ export class GradeEntity implements Grade {
     this.name = data.name;
     this.level = data.level;
     this.code = data.code;
+    this.isActive = data.isActive;
     this.createdAt = new Date();
     this.updatedAt = new Date();
   }

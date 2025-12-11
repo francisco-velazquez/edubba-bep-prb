@@ -1,29 +1,30 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
-import * as studentRepositoryPort from '../ports/student-repository.port';
+import type { IStudentRepositoryPort } from '../ports/student-repository.port';
+import { I_STUDENT_REPOSITORY } from '../ports/student-repository.port';
 import { CreateStudentDto } from '../dtos/create-student.dto';
-import { Student } from '../../domain/student.type';
+import { Student } from '../../domain/student.entity';
+import { StudentResponseDto } from '../dtos/student-response.dto';
 
 @Injectable()
 export class CreateStudentUseCase {
   constructor(
-    @Inject(studentRepositoryPort.I_STUDENT_REPOSITORY)
-    private readonly studentRepository: studentRepositoryPort.IStudentRepository,
-    // Aquí se inyectaría el FindUserByIdUseCase del UsersModule para verificar
-    // que el userId existe antes de crear la entidad Student.
-    // private readonly findUserByIdUseCase: FindUserByIdUseCase, 
+    @Inject(I_STUDENT_REPOSITORY)
+    private readonly studentRepository: IStudentRepositoryPort,
   ) {}
 
-  async execute(dto: CreateStudentDto): Promise<Student> {
-    // 1. (PENDIENTE) Verificar que el userId y el currentGradeId existan.
+  async execute(dto: CreateStudentDto): Promise<StudentResponseDto> {
+    // TODO: Validar que el numero de matricula no se duplique.
 
     const newStudent: Student = {
-      id: dto.userId, // El ID del Student es el mismo que el ID del User
+      userId: dto.userId,
       enrollmentCode: dto.enrollmentCode,
-      currentGradeId: dto.currentGradeId || null,
+      currentGradeId: dto.currentGradeId || 0,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
 
-    return this.studentRepository.save(newStudent);
+    const savedStudent = await this.studentRepository.save(newStudent);
+
+    return new StudentResponseDto(savedStudent);
   }
 }

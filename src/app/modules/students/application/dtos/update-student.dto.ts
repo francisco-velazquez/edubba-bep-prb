@@ -1,3 +1,14 @@
-import { CreateStudentDto } from './create-student.dto';
+import { ApiProperty } from "@nestjs/swagger";
+import { IsInt, IsOptional, IsString } from "class-validator";
 
-export class UpdateStudentDto extends CreateStudentDto { }
+export class UpdateStudentDto {
+  @ApiProperty({ example: 'Matricula del alumno' })
+  @IsString()
+  @IsOptional()
+  enrollmentCode?: string;
+
+  @ApiProperty({ example: 1 })
+  @IsInt()
+  @IsOptional()
+  currentGradeId?: number;
+}

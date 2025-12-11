@@ -9,6 +9,7 @@ export interface Grade {
   name: string;
   level: GradeLevel,
   code: string;
+  isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
 }

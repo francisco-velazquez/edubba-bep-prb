@@ -1,21 +1,22 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
-import * as studentRepositoryPort from '../ports/student-repository.port';
-import { Student, StudentId } from '../../domain/student.type';
+import type { IStudentRepositoryPort } from '../ports/student-repository.port';
+import { I_STUDENT_REPOSITORY } from '../ports/student-repository.port';
+import { StudentResponseDto } from '../dtos/student-response.dto';
 
 @Injectable()
 export class FindStudentByIdUseCase {
   constructor(
-    @Inject(studentRepositoryPort.I_STUDENT_REPOSITORY)
-    private readonly studentRepository: studentRepositoryPort.IStudentRepository,
+    @Inject(I_STUDENT_REPOSITORY)
+    private readonly studentRepository: IStudentRepositoryPort,
   ) {}
 
-  async execute(id: StudentId): Promise<Student> {
-    const student = await this.studentRepository.findById(id);
+  async execute(userId: string): Promise<StudentResponseDto> {
+    const student = await this.studentRepository.findById(userId);
 
     if (!student) {
-      throw new NotFoundException(`Student with ID ${id} not found.`);
+      throw new NotFoundException(`Student with ID ${userId} not found.`);
     }
 
-    return student;
+    return new StudentResponseDto(student);
   }
 }

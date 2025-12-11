@@ -96,12 +96,12 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
       // 2. Insertar el rol
       await manager.query(
         'INSERT INTO public.user_roles (user_id, role) VALUES ($1, $2)',
-        [newUserId, data.role],
+        [newUserId, data.role!],
       );
 
       // Devolvemos la entidad del dominio
       // toDomainEntity necesita el ORM y el rol para el mapeo completo
-      return this.toDomainEntity(savedProfile, data.role);
+      return this.toDomainEntity(savedProfile, data.role!);
     });
   }
 
@@ -228,7 +228,7 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
       }
 
       // Devolvemos la entidad del dominiio con los datos actualizados
-      return this.toDomainEntity(saveProfile, user.role);
+      return this.toDomainEntity(saveProfile, user.role!);
     });
   }
 
