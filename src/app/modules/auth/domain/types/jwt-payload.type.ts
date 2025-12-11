@@ -1,5 +1,5 @@
 import { UserResponseDto } from "src/app/modules/users/application/dtos/user-response.dto";
-import { UserRole } from "src/app/modules/users/domain/enums/user-role.enum";
+import { UserRole } from "src/common/enums/user-role.enum";
 
 export interface JwtPayload {
   sub: string; // User Id (UUID)

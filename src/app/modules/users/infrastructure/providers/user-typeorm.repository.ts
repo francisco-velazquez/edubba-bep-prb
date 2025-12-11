@@ -44,10 +44,11 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
     const orm = new UserOrmEntity();
     orm.id = user.id;
     orm.email = user.email;
-    orm.fullName = user.fullName;
+    orm.firstName = user.firstName;
+    orm.lastName = user.lastName;
     orm.passwordHash = user.passwordHash,
     orm.isActive = user.isActive;
-    orm.currentGradeId = user.currentGradeId!;
+    orm.dateOfBirth = user.dateOfBirth!;
     return orm;
   }
 
@@ -55,9 +56,12 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
   private toDomainEntity(ormUser: UserOrmEntity, role: string, passwordHash?: string): User {
     return {
       ...ormUser,
-      fullName: ormUser.fullName,
+      firstName: ormUser.firstName,
+      lastName: ormUser.lastName,
       passwordHash: passwordHash || '',
       role: role as User['role'], // Mapeamos el string del rol a nuestro Enum
+      isActive: ormUser.isActive,
+      dateOfBirth: ormUser.dateOfBirth,
     };
   }
 
@@ -65,10 +69,46 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
   // INTERFACE IMPLEMENTATION
   // =======================================================================
 
+  async create(data: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'isActive'> & { passwordHash: string }): Promise<User> {
+    const newUserId = uuidv4();
+    const now = new Date();
+
+    const newUser: User = {
+        id: newUserId,
+        email: data.email,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        passwordHash: data.passwordHash,
+        role: data.role,
+        dateOfBirth: data.dateOfBirth,
+        isActive: true,
+        createdAt: now,
+        updatedAt: now,
+    };
+
+    const ormUser = this.toOrmEntity(newUser);
+
+    // Usamos una transacción para garantizar que profiles y user_roles se creen juntos
+    return this.dataSource.transaction(async (manager) => {
+      // 1. Guardar la entidad en profiles
+      const savedProfile = await manager.save(UserOrmEntity, ormUser);
+
+      // 2. Insertar el rol
+      await manager.query(
+        'INSERT INTO public.user_roles (user_id, role) VALUES ($1, $2)',
+        [newUserId, data.role],
+      );
+
+      // Devolvemos la entidad del dominio
+      // toDomainEntity necesita el ORM y el rol para el mapeo completo
+      return this.toDomainEntity(savedProfile, data.role);
+    });
+  }
+
   async findByEmail(email: string): Promise<User | null> {
     const ormUser = await this.profilesRepository.findOne({
       where: { email },
-      select: ['id', 'email', 'fullName', 'isActive', 'currentGradeId', 'passwordHash', 'createdAt', 'updatedAt'] as (keyof UserOrmEntity)[]
+      select: ['id', 'email', 'firstName', 'lastName', 'isActive', 'dateOfBirth', 'passwordHash', 'createdAt', 'updatedAt'] as (keyof UserOrmEntity)[]
     });
 
     if (!ormUser) {
@@ -80,8 +120,11 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
     // Mapeo (Mapper) de ORM Entity a Domain Entity
     const domainUser: User = {
       ...ormUser,
-      fullName: ormUser.fullName,
+      firstName: ormUser.firstName,
+      lastName: ormUser.lastName,
       role: role as User['role'],
+      isActive: ormUser.isActive,
+      dateOfBirth: ormUser.dateOfBirth
     };
 
     return domainUser;
@@ -101,8 +144,11 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
     // Mapeo (Mapper) de ORM Entity a Domain Entity
     const domainUser: User = {
       ...ormUser,
-      fullName: ormUser.fullName,
+      firstName: ormUser.firstName,
+      lastName: ormUser.lastName,
       role: role as User['role'],
+      isActive: ormUser.isActive,
+      dateOfBirth: ormUser.dateOfBirth
     };
 
     return domainUser;
@@ -118,8 +164,11 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
         // Mapeo (Mapper) de ORM Entity a Domain Entity
         const domainUser: User = {
           ...ormUser,
-          fullName: ormUser.fullName,
+          firstName: ormUser.firstName,
+          lastName: ormUser.lastName,
           role: role as User['role'],
+          isActive: ormUser.isActive,
+          dateOfBirth: ormUser.dateOfBirth
         };
 
         return domainUser;
@@ -139,8 +188,11 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
         // Mapeo (Mapper) de ORM Entity a Domain Entity
         const domainUser: User = {
           ...ormUser,
-          fullName: ormUser.fullName,
+          firstName: ormUser.firstName,
+          lastName: ormUser.lastName,
           role: role as User['role'],
+          isActive: ormUser.isActive,
+          dateOfBirth: ormUser.dateOfBirth
         };
 
         return domainUser;
@@ -151,13 +203,13 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
   }
 
   async save(user: User): Promise<User> {
-    // Generamos la clave UUID para nuevos usuarios
-    if(user.id === '') {
-      user.id = uuidv4();
-      user.createdAt = new Date();
-      user.updatedAt = new Date();
+    // ⚠️ Validación: El ID debe existir para guardar/actualizar
+    if (!user.id) {
+        throw new InternalServerErrorException('Cannot save user without an existing ID.');
     }
+
     const ormUser = this.toOrmEntity(user);
+    ormUser.updatedAt = new Date(); // Actualizamos el timestamp
 
     // Usamos una transacción para garantizar que profiles y user_roles se actualicen juntos
     return this.dataSource.transaction(async (manager) => {
@@ -172,12 +224,6 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
         await manager.query(
           'UPDATE public.user_roles SET role = $1 WHERE user_id = $2',
           [user.role, user.id],
-        );
-      } else if (!currentRole) {
-        // Si no existe, se inserta
-        await manager.query(
-          'INSERT INTO public.user_roles (user_id, role) VALUES ($1, $2)',
-          [user.id, user.role],
         );
       }
 

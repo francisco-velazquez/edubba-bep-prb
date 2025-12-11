@@ -1,17 +1,17 @@
 import { ConflictException, Inject, Injectable } from "@nestjs/common";
-import type { IUserRepositoryPort } from "src/app/modules/users/domain/ports/user-repository.port";
+import { I_USER_REPOSITORY, type IUserRepositoryPort } from "src/app/modules/users/domain/ports/user-repository.port";
 import * as bcrypt from 'bcrypt';
 import { RegisterDto } from "../dtos/register.dto";
 import { UserResponseDto } from "src/app/modules/users/application/dtos/user-response.dto";
 import { User } from "src/app/modules/users/domain/entities/user.entity";
-import { UserRole } from "src/app/modules/users/domain/enums/user-role.enum";
+import { UserRole } from "src/common/enums/user-role.enum";
 import { SUPABASE_CLIENT } from "src/shared/supabase/supabase.provider";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 @Injectable()
 export class RegisterUserUseCase {
   constructor(
-    @Inject('IUserRepository')
+    @Inject(I_USER_REPOSITORY)
     private readonly userRepository: IUserRepositoryPort,
     @Inject(SUPABASE_CLIENT) 
     private readonly supabaseClient: SupabaseClient,
@@ -44,11 +44,12 @@ export class RegisterUserUseCase {
     const newUser: User = {
       id: supabaseUserId, // El repositorio se encargará de generar un UUID o usar el de Supabase Auth
       email: dto.email,
-      fullName: dto.fullName,
+      firstName: dto.firstName,
+      lastName: dto.lastName,
       passwordHash: passwordHash,
-      role: UserRole.ALUMNO,
+      role: UserRole.STUDENT,
       isActive: true,
-      currentGradeId: dto.gradeId,
+      dateOfBirth: new Date(dto.dateOfBirth),
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -57,6 +58,6 @@ export class RegisterUserUseCase {
     const savedUser = await this.userRepository.save(newUser);
 
     //Devolvemos el dto como respuesta
-    return new UserResponseDto(newUser);
+    return new UserResponseDto(savedUser);
   }
 }

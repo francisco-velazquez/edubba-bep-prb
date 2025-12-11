@@ -8,6 +8,7 @@ import { JwtTokenService } from './infrastructure/providers/jwt-token.service';
 import { JwtStrategy } from './infrastructure/strategies/jwt.strategy';
 import { RegisterUserUseCase } from './application/use-cases/register-user.use-case';
 import { SupabaseModule } from 'src/shared/supabase/supabase.module';
+import { RolesGuard } from 'src/shared/guards/roles.guard';
 
 @Module({
   imports: [
@@ -39,12 +40,14 @@ import { SupabaseModule } from 'src/shared/supabase/supabase.module';
     },
 
     JwtStrategy,
+    RolesGuard,
   ],
 
   exports: [
     // Exportamos el módulo jwt y la extrategía para que los guards puedan hacer uso de ellos globalmente
     JwtModule,
     JwtStrategy,
+    RolesGuard,
   ]
 })
 export class AuthModule {}

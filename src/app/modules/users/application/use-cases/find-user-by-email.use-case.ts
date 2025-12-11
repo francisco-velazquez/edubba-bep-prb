@@ -1,12 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { IUserRepositoryPort } from '../../domain/ports/user-repository.port';
+import { I_USER_REPOSITORY, type IUserRepositoryPort } from '../../domain/ports/user-repository.port';
 import { UserResponseDto } from '../dtos/user-response.dto';
 import { User } from '../../domain/entities/user.entity';
 
 @Injectable()
 export class FindUserByEmailUseCase {
   constructor(
-    @Inject('IUserRepository')
+    @Inject(I_USER_REPOSITORY)
     private readonly userRepository: IUserRepositoryPort,
   ) {}
 

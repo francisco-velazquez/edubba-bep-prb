@@ -1,18 +1,20 @@
 import { User } from '../../domain/entities/user.entity';
-import { UserRole } from '../../domain/enums/user-role.enum';
+import { UserRole } from 'src/common/enums/user-role.enum';
 
 export class UserResponseDto {
   id: string;
   email: string;
-  fullName: string;
+  firstName: string;
+  lastName: string;
   role: UserRole;
-  currentGradeId: number;
+  dateOfBirth: Date;
 
   constructor(user: User) {
     this.id = user.id;
     this.email = user.email;
-    this.fullName = user.fullName;
+    this.firstName = user.firstName;
+    this.lastName = user.lastName;
     this.role = user.role;
-    this.currentGradeId = user.currentGradeId!;
+    this.dateOfBirth = user.dateOfBirth;
   }
 }

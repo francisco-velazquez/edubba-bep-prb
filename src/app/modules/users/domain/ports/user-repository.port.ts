@@ -1,7 +1,11 @@
+import { CreateUserDto } from 'src/app/modules/users/application/dtos/create-user.dto';
 import { User } from '../entities/user.entity';
 
+// Token para inyección de dependencia
+export const I_USER_REPOSITORY = Symbol('IUserRepository');
+
 export interface IUserRepositoryPort {
-  // Se usará en el módulo Auth para validar credenciales
+  create(data: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'isActive'> & { passwordHash: string }): Promise<User>;
   findByEmail(email: string): Promise<User | null>;
 
   // Métodos básicos de gestión de usuarios

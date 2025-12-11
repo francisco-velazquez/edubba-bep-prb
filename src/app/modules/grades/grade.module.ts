@@ -9,11 +9,13 @@ import { FindAllGradesUseCase } from "./application/use-case/find-all-grades.use
 import { FindGradeByIdUseCase } from "./application/use-case/find-grade-by-id.use-case";
 import { UpdateGradeUseCase } from "./application/use-case/update-grade.use-case";
 import { DeleteGradeUseCase } from "./application/use-case/delete-grade.use-case";
+import { AuthModule } from "../auth/auth.module";
 
 @Module({
   imports: [
     // Registramos las entidades ORM
     TypeOrmModule.forFeature([GradeOrmEntity]),
+    AuthModule,
   ],
   controllers: [GradesController],
   providers: [

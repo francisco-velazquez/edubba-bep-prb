@@ -1,5 +1,6 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { GradeLevel } from "../../domain/grade.type";
+import { StudentOrmEntity } from '../../../students/infrastructure/entities/student-orm.entity';
 
 @Entity('academic_grades')
 export class GradeOrmEntity {
@@ -23,4 +24,8 @@ export class GradeOrmEntity {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  // 🔑 NUEVA PROPIEDAD: Relación inversa a StudentOrmEntity
+  @OneToMany(() => StudentOrmEntity, (student) => student.currentGrade)
+  students: StudentOrmEntity[];
 }

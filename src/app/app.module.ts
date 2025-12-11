@@ -9,6 +9,7 @@ import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { GradeModule } from './modules/grades/grade.module';
+import { StudentsModule } from './modules/students/students.module';
 
 @Module({
   imports: [
@@ -54,6 +55,9 @@ import { GradeModule } from './modules/grades/grade.module';
 
     // Módulo de grados academicos
     GradeModule,
+
+    // Módulo de estudiasnte
+    StudentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
