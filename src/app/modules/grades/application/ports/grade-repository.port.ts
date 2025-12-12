@@ -1,10 +1,10 @@
-import { Grade } from "../../domain/grade.type";
+import { Grade } from '../../domain/grade.type';
 
 export const I_GRADE_REPOSITORY = 'IGradeRepository';
 
 export interface IGradeRepository {
   // Guarda o actualiza un grado
-  save(grade: Partial<Grade> & {id?: number}): Promise<Grade>;
+  save(grade: Partial<Grade> & { id?: number }): Promise<Grade>;
 
   // Devuelve todos los grados
   findAll(): Promise<Grade[]>;

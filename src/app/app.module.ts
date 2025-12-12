@@ -12,6 +12,7 @@ import { GradeModule } from './modules/grades/grade.module';
 import { StudentsModule } from './modules/students/students.module';
 import { TeachersModule } from './modules/teachers/teachers.module';
 import { SubjectsModule } from './modules/subjects/subjects.module';
+import { ModulesModule } from './modules/modules/modules.module';
 
 @Module({
   imports: [
@@ -67,6 +68,9 @@ import { SubjectsModule } from './modules/subjects/subjects.module';
 
     // Módulo de materias
     SubjectsModule,
+
+    // Módulo de modulos para la asignatura
+    ModulesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

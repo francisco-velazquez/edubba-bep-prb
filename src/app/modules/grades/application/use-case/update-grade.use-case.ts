@@ -1,10 +1,9 @@
-import { Inject, Injectable, NotFoundException } from "@nestjs/common";
-import type { IGradeRepository } from "../ports/grade-repository.port";
-import { I_GRADE_REPOSITORY } from "../ports/grade-repository.port";
-import { FindGradeByIdUseCase } from "./find-grade-by-id.use-case";
-import { UpdateGradeDto } from "../dtos/update-grade.dto";
-import { Grade } from "../../domain/grade.type";
-
+import { Inject, Injectable } from '@nestjs/common';
+import type { IGradeRepository } from '../ports/grade-repository.port';
+import { I_GRADE_REPOSITORY } from '../ports/grade-repository.port';
+import { FindGradeByIdUseCase } from './find-grade-by-id.use-case';
+import { UpdateGradeDto } from '../dtos/update-grade.dto';
+import { Grade } from '../../domain/grade.type';
 
 @Injectable()
 export class UpdateGradeUseCase {
@@ -24,7 +23,7 @@ export class UpdateGradeUseCase {
       ...existingGrade,
       ...dto,
       id: id,
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
 
     // Guardamos la modificación

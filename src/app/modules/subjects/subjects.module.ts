@@ -11,10 +11,15 @@ import { UpdateSubjectUseCase } from './application/use-cases/update-subject.use
 import { DeleteSubjectUseCase } from './application/use-cases/delete-subject.use-case';
 import { I_SUBJECT_REPOSITORY } from './domain/subject.entity';
 import { SubjectTypeOrmRepository } from './infrastructure/providers/subject-typeorm.repository';
+import { ModuleOrmEntity } from '../modules/infrastructure/entities/module-orm.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([SubjectOrmEntity, TeacherOrmEntity]),
+    TypeOrmModule.forFeature([
+      SubjectOrmEntity,
+      TeacherOrmEntity,
+      ModuleOrmEntity,
+    ]),
     AuthModule,
   ],
   controllers: [SubjectsController],

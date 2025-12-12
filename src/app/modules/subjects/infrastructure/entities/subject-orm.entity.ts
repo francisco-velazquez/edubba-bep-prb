@@ -1,4 +1,5 @@
 import { GradeOrmEntity } from 'src/app/modules/grades/infrastructure/entities/grade-orm.entity';
+import { ModuleOrmEntity } from 'src/app/modules/modules/infrastructure/entities/module-orm.entity';
 import { TeacherOrmEntity } from 'src/app/modules/teachers/infrastructure/entities/teacher-orm.entity';
 import {
   Column,
@@ -7,6 +8,7 @@ import {
   JoinColumn,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -42,4 +44,8 @@ export class SubjectOrmEntity {
   // Aquí solo declaramos la relación inversa
   @ManyToMany(() => TeacherOrmEntity, (teacher) => teacher.subjects)
   teachers: TeacherOrmEntity[];
+
+  // 1:N Una asignatura tiene muchos módulos (modules)
+  @OneToMany(() => ModuleOrmEntity, (module) => module.subject)
+  modules: ModuleOrmEntity[];
 }
