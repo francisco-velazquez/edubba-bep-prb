@@ -1,6 +1,14 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { GradeLevel } from "../../domain/grade.type";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { GradeLevel } from '../../domain/grade.type';
 import { StudentOrmEntity } from '../../../students/infrastructure/entities/student-orm.entity';
+import { SubjectOrmEntity } from 'src/app/modules/subjects/infrastructure/entities/subject-orm.entity';
 
 @Entity('academic_grades')
 export class GradeOrmEntity {
@@ -28,4 +36,9 @@ export class GradeOrmEntity {
   // 🔑 NUEVA PROPIEDAD: Relación inversa a StudentOrmEntity
   @OneToMany(() => StudentOrmEntity, (student) => student.currentGrade)
   students: StudentOrmEntity[];
+
+  // 🔑 NUEVA PROPIEDAD: Relación inversa a SubjectOrmEntity
+  // Un Grado Académico tiene muchas Asignaturas
+  @OneToMany(() => SubjectOrmEntity, (subject) => subject.grade)
+  subjects: SubjectOrmEntity[]; // Añade esta propiedad
 }

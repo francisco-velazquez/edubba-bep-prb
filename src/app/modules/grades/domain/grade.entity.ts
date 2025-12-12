@@ -1,4 +1,4 @@
-import { Grade, GradeLevel } from "./grade.type";
+import { Grade, GradeLevel } from './grade.type';
 
 export class GradeEntity implements Grade {
   id: number;

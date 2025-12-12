@@ -1,21 +1,24 @@
-import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { GradeOrmEntity } from "./infrastructure/entities/grade-orm.entity";
-import { GradesController } from "./infrastructure/controllers/grades.controller";
-import { I_GRADE_REPOSITORY } from "./application/ports/grade-repository.port";
-import { GradeTypeOrmRepository } from "./infrastructure/providers/grade-typeorm.repository";
-import { CreateGradeUseCase } from "./application/use-case/create-grade.use-case";
-import { FindAllGradesUseCase } from "./application/use-case/find-all-grades.use-case";
-import { FindGradeByIdUseCase } from "./application/use-case/find-grade-by-id.use-case";
-import { UpdateGradeUseCase } from "./application/use-case/update-grade.use-case";
-import { DeleteGradeUseCase } from "./application/use-case/delete-grade.use-case";
-import { AuthModule } from "../auth/auth.module";
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { GradeOrmEntity } from './infrastructure/entities/grade-orm.entity';
+import { GradesController } from './infrastructure/controllers/grades.controller';
+import { I_GRADE_REPOSITORY } from './application/ports/grade-repository.port';
+import { GradeTypeOrmRepository } from './infrastructure/providers/grade-typeorm.repository';
+import { CreateGradeUseCase } from './application/use-case/create-grade.use-case';
+import { FindAllGradesUseCase } from './application/use-case/find-all-grades.use-case';
+import { FindGradeByIdUseCase } from './application/use-case/find-grade-by-id.use-case';
+import { UpdateGradeUseCase } from './application/use-case/update-grade.use-case';
+import { DeleteGradeUseCase } from './application/use-case/delete-grade.use-case';
+import { AuthModule } from '../auth/auth.module';
+import { SubjectsModule } from '../subjects/subjects.module';
+import { FindSubjectsByGradeUseCase } from './application/use-case/find-subjects-by-grade.use-case';
 
 @Module({
   imports: [
     // Registramos las entidades ORM
     TypeOrmModule.forFeature([GradeOrmEntity]),
     AuthModule,
+    SubjectsModule,
   ],
   controllers: [GradesController],
   providers: [
@@ -34,9 +37,10 @@ import { AuthModule } from "../auth/auth.module";
 
     // Repositorio ORM
     GradeTypeOrmRepository,
+
+    // UseCase de Subjects
+    FindSubjectsByGradeUseCase,
   ],
-  exports: [
-    FindAllGradesUseCase,
-  ],
+  exports: [FindAllGradesUseCase],
 })
 export class GradeModule {}

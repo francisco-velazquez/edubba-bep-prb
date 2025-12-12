@@ -1,17 +1,31 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put, UseGuards } from "@nestjs/common";
-import { CreateGradeUseCase } from "../../application/use-case/create-grade.use-case";
-import { FindAllGradesUseCase } from "../../application/use-case/find-all-grades.use-case";
-import { CreateGradeDto } from "../../application/dtos/create-grade.dto";
-import { Grade } from "../../domain/grade.type";
-import { FindGradeByIdUseCase } from "../../application/use-case/find-grade-by-id.use-case";
-import { UpdateGradeUseCase } from "../../application/use-case/update-grade.use-case";
-import { DeleteGradeUseCase } from "../../application/use-case/delete-grade.use-case";
-import { UpdateGradeDto } from "../../application/dtos/update-grade.dto";
-import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { JwtAuthGuard } from "src/shared/guards/jwt-auth.guard";
-import { RolesGuard } from "src/shared/guards/roles.guard";
-import { Roles } from 'src/common/decorators/roles.decorator'; 
-import { UserRole } from 'src/common/enums/user-role.enum'; 
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
+import { CreateGradeUseCase } from '../../application/use-case/create-grade.use-case';
+import { FindAllGradesUseCase } from '../../application/use-case/find-all-grades.use-case';
+import { CreateGradeDto } from '../../application/dtos/create-grade.dto';
+import { Grade } from '../../domain/grade.type';
+import { FindGradeByIdUseCase } from '../../application/use-case/find-grade-by-id.use-case';
+import { UpdateGradeUseCase } from '../../application/use-case/update-grade.use-case';
+import { DeleteGradeUseCase } from '../../application/use-case/delete-grade.use-case';
+import { UpdateGradeDto } from '../../application/dtos/update-grade.dto';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/shared/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { UserRole } from 'src/common/enums/user-role.enum';
+import { FindSubjectsByGradeUseCase } from '../../application/use-case/find-subjects-by-grade.use-case';
+import { SubjectResponseDto } from 'src/app/modules/subjects/application/dtos/subject-response.dto';
 
 @ApiTags('grades')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -23,16 +37,17 @@ export class GradesController {
     private readonly findGradeByIdUseCase: FindGradeByIdUseCase,
     private readonly updateGradeUseCase: UpdateGradeUseCase,
     private readonly deleteGradeUseCase: DeleteGradeUseCase,
+    private readonly findSubjectsByGradeUseCase: FindSubjectsByGradeUseCase,
   ) {}
 
   @Post()
   @ApiOperation({
     summary: 'Creación de grado académico',
-    description: 'Crea un nuevo campo académico en la base de datos'
+    description: 'Crea un nuevo campo académico en la base de datos',
   })
   @ApiResponse({
     status: 200,
-    description: 'Grado academico creado'
+    description: 'Grado academico creado',
   })
   @Roles(UserRole.ADMIN)
   async create(@Body() dto: CreateGradeDto): Promise<Grade> {
@@ -42,7 +57,8 @@ export class GradesController {
   @Get()
   @ApiOperation({
     summary: 'Obtener todos los grados',
-    description: 'Obtiene todos los grados academicos registrados en la base de datos'
+    description:
+      'Obtiene todos los grados academicos registrados en la base de datos',
   })
   @Roles(UserRole.ADMIN, UserRole.TEACHER, UserRole.STUDENT)
   async findAll(): Promise<Grade[]> {
@@ -52,7 +68,7 @@ export class GradesController {
   @Get(':id')
   @ApiOperation({
     summary: 'Obtención de grado por ID',
-    description: 'Obtiene un grado académico dado su identificador'
+    description: 'Obtiene un grado académico dado su identificador',
   })
   @Roles(UserRole.ADMIN, UserRole.TEACHER)
   async findById(@Param('id', ParseIntPipe) id: number): Promise<Grade> {
@@ -62,7 +78,7 @@ export class GradesController {
   @Put(':id')
   @ApiOperation({
     summary: 'Actualización de grado académico',
-    description: 'Actualiza un grado academico dado su identificador'
+    description: 'Actualiza un grado academico dado su identificador',
   })
   @Roles(UserRole.ADMIN)
   async update(
@@ -75,11 +91,29 @@ export class GradesController {
   @Delete(':id')
   @ApiOperation({
     summary: 'Eliminación de grado académico',
-    description: 'Elimina un grado académico en base a su identificador, de forma lógica'
+    description:
+      'Elimina un grado académico en base a su identificador, de forma lógica',
   })
   @Roles(UserRole.ADMIN)
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
     await this.deleteGradeUseCase.execute(id);
+  }
+
+  @Get(':id/subjects')
+  @Roles(UserRole.ADMIN, UserRole.TEACHER)
+  @ApiOperation({
+    summary: 'Obtener todas las asignaturas de un grado académico',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Asignaturas encontradas',
+    type: SubjectResponseDto,
+    isArray: true,
+  })
+  async findSubjectsByGrade(
+    @Param('id', ParseIntPipe) gradeId: number,
+  ): Promise<SubjectResponseDto[]> {
+    return this.findSubjectsByGradeUseCase.execute(gradeId);
   }
 }

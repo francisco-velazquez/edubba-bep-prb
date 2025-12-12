@@ -10,6 +10,8 @@ import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { GradeModule } from './modules/grades/grade.module';
 import { StudentsModule } from './modules/students/students.module';
+import { TeachersModule } from './modules/teachers/teachers.module';
+import { SubjectsModule } from './modules/subjects/subjects.module';
 
 @Module({
   imports: [
@@ -25,7 +27,7 @@ import { StudentsModule } from './modules/students/students.module';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         console.log('Database configuration loading...');
-        
+
         return {
           type: 'postgres',
           host: configService.get('DATABASE_HOST'),
@@ -35,9 +37,10 @@ import { StudentsModule } from './modules/students/students.module';
           database: configService.get('DATABASE_NAME'),
           autoLoadEntities: true,
           synchronize: false,
-          ssl: configService.get('NODE_ENV') === 'production' 
-            ? { rejectUnauthorized: false } 
-            : false,
+          ssl:
+            configService.get('NODE_ENV') === 'production'
+              ? { rejectUnauthorized: false }
+              : false,
           // Opciones adicionales para debugging
           logging: true,
           extra: {
@@ -58,6 +61,12 @@ import { StudentsModule } from './modules/students/students.module';
 
     // Módulo de estudiasnte
     StudentsModule,
+
+    // Módulo de maestros
+    TeachersModule,
+
+    // Módulo de materias
+    SubjectsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -12,7 +12,7 @@ export const supabaseProvider = {
     if (!supabaseUrl || !supabaseAnonKey) {
       throw new Error('Supabase configuration not found in environment.');
     }
-    
+
     // Inicializa y devuelve el cliente de Supabase
     return createClient(supabaseUrl, supabaseAnonKey);
   },
