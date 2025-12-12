@@ -1,3 +1,4 @@
+import { ChapterOrmEntity } from 'src/app/modules/chapters/infrastructure/entities/chapter-orm.entity';
 import { SubjectOrmEntity } from 'src/app/modules/subjects/infrastructure/entities/subject-orm.entity';
 import {
   Column,
@@ -5,6 +6,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -39,6 +41,6 @@ export class ModuleOrmEntity {
   subject: SubjectOrmEntity;
 
   // 1:N Un módulo tiene muchos Capitulos (chapters)
-  // @OneToMany(() => ChapterOrmEntity, chapter => chapter.module)
-  // chapters: ChapterOrmEntity[];
+  @OneToMany(() => ChapterOrmEntity, (chapter) => chapter.module)
+  chapters: ChapterOrmEntity[];
 }

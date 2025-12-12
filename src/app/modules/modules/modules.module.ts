@@ -11,10 +11,11 @@ import { I_MODULE_REPOSITORY } from './domain/module.entity';
 import { ModuleTypeOrmRepository } from './infrastructure/providers/module-typeorm.repository';
 import { ModulesController } from './infrastructure/controllers/modules.controller';
 import { SubjectsModule } from '../subjects/subjects.module';
+import { ChapterOrmEntity } from '../chapters/infrastructure/entities/chapter-orm.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ModuleOrmEntity]),
+    TypeOrmModule.forFeature([ModuleOrmEntity, ChapterOrmEntity]),
     AuthModule,
     SubjectsModule,
   ],

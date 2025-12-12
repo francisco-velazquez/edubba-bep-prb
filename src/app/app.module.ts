@@ -13,6 +13,7 @@ import { StudentsModule } from './modules/students/students.module';
 import { TeachersModule } from './modules/teachers/teachers.module';
 import { SubjectsModule } from './modules/subjects/subjects.module';
 import { ModulesModule } from './modules/modules/modules.module';
+import { ChaptersModule } from './modules/chapters/chapters.module';
 
 @Module({
   imports: [
@@ -71,6 +72,9 @@ import { ModulesModule } from './modules/modules/modules.module';
 
     // Módulo de modulos para la asignatura
     ModulesModule,
+
+    // Módulo de capitulos para cada módulo
+    ChaptersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
