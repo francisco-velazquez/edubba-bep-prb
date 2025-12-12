@@ -1,26 +1,27 @@
-import { IsEnum, IsNotEmpty, IsString } from "class-validator";
-import { GradeLevel } from "../../domain/grade.type";
-import { ApiProperty } from "@nestjs/swagger";
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { GradeLevel } from '../../domain/grade.type';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateGradeDto {
   @ApiProperty({
-    example: 'Primero de primaria'
+    description: 'Nombre del grado',
+    example: 'Primero de primaria',
   })
   @IsNotEmpty()
   @IsString()
   name: string;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Grado academico',
     example: GradeLevel.PRIMARY,
-    enum: GradeLevel 
+    enum: GradeLevel,
   })
   @IsNotEmpty()
   @IsEnum(GradeLevel)
   level: GradeLevel;
 
   @ApiProperty({
-    example: 'PRM_1'
+    example: 'PRM_1',
   })
   @IsNotEmpty()
   @IsString()
