@@ -1,4 +1,4 @@
-import { Injectable, Inject, NotFoundException } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import type { IStudentRepositoryPort } from '../ports/student-repository.port';
 import { I_STUDENT_REPOSITORY } from '../ports/student-repository.port';
 import { CreateStudentDto } from '../dtos/create-student.dto';

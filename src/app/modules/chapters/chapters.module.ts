@@ -12,6 +12,9 @@ import { UpdateChapterUseCase } from './application/use-cases/update-chapter.use
 import { DeleteChapterUseCase } from './application/use-cases/delete-chapter.use-case';
 import { I_CHAPTER_REPOSITORY } from './domain/chapter.entity';
 import { ChapterTypeOrmRepository } from './infrastructure/providers/chapter-typeorm.repository';
+import { UploadChapterMediaUseCase } from './application/use-cases/upload-chapter-media.use-case';
+import { GetChapterUploadConfigUseCase } from './application/use-cases/get-chapter-upload-config.use-case';
+import { ConfirmChapterUploadUseCase } from './application/use-cases/confirm-chapter-upload.use-case';
 
 @Module({
   imports: [
@@ -27,6 +30,9 @@ import { ChapterTypeOrmRepository } from './infrastructure/providers/chapter-typ
     FindChaptersByModuleUseCase,
     UpdateChapterUseCase,
     DeleteChapterUseCase,
+    UploadChapterMediaUseCase,
+    GetChapterUploadConfigUseCase,
+    ConfirmChapterUploadUseCase,
     {
       provide: I_CHAPTER_REPOSITORY,
       useClass: ChapterTypeOrmRepository,

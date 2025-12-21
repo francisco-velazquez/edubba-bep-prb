@@ -1,4 +1,5 @@
 import { ChapterOrmEntity } from 'src/app/modules/chapters/infrastructure/entities/chapter-orm.entity';
+import { ExamOrmEntity } from 'src/app/modules/exams/infrastructure/entities/exam-orm.entity';
 import { SubjectOrmEntity } from 'src/app/modules/subjects/infrastructure/entities/subject-orm.entity';
 import {
   Column,
@@ -43,4 +44,8 @@ export class ModuleOrmEntity {
   // 1:N Un módulo tiene muchos Capitulos (chapters)
   @OneToMany(() => ChapterOrmEntity, (chapter) => chapter.module)
   chapters: ChapterOrmEntity[];
+
+  //TODO: 1:N Un capítulo puede tener muchos examenes
+  @OneToMany(() => ExamOrmEntity, (exam) => exam.module)
+  exams: ExamOrmEntity;
 }

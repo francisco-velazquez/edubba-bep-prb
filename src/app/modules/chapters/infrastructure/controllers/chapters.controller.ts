@@ -11,6 +11,8 @@ import {
   UseGuards,
   HttpStatus,
   HttpCode,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -26,6 +28,11 @@ import { DeleteChapterUseCase } from '../../application/use-cases/delete-chapter
 import { CreateChapterDto } from '../../application/dtos/create-chapter.dto';
 import { ChapterResponseDto } from '../../application/dtos/chapter-response.dto';
 import { UpdateChapterDto } from '../../application/dtos/update-chapter.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { UploadChapterMediaUseCase } from '../../application/use-cases/upload-chapter-media.use-case';
+import { GetChapterUploadConfigUseCase } from '../../application/use-cases/get-chapter-upload-config.use-case';
+import { ConfirmUploadDto } from '../../application/dtos/confirm-upload.dto';
+import { ConfirmChapterUploadUseCase } from '../../application/use-cases/confirm-chapter-upload.use-case';
 
 @ApiTags('chapters')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -38,6 +45,9 @@ export class ChaptersController {
     private readonly findChaptersByModuleUseCase: FindChaptersByModuleUseCase,
     private readonly updateChapterUseCase: UpdateChapterUseCase,
     private readonly deleteChapterUseCase: DeleteChapterUseCase,
+    private readonly uploadMediaUseCase: UploadChapterMediaUseCase,
+    private readonly getChapterUploadConfigUseCase: GetChapterUploadConfigUseCase,
+    private readonly confirmUploadUseCase: ConfirmChapterUploadUseCase,
   ) {}
 
   @Post()
@@ -97,5 +107,51 @@ export class ChaptersController {
   @ApiOperation({ summary: 'Elimina un capítulo' })
   async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
     await this.deleteChapterUseCase.execute(id);
+  }
+
+  @Post(':id/upload-video')
+  @Roles(UserRole.ADMIN, UserRole.TEACHER)
+  @UseInterceptors(FileInterceptor('video'))
+  async uploadVideo(
+    @Param('id', ParseIntPipe) id: number,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.uploadMediaUseCase.execute(id, file, 'video');
+  }
+
+  @Post(':id/upload-content')
+  @Roles(UserRole.ADMIN, UserRole.TEACHER)
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadContent(
+    @Param('id', ParseIntPipe) id: number,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return await this.uploadMediaUseCase.execute(id, file, 'content');
+  }
+
+  // 1. Solicitar URL para subir
+  @Post(':id/request-upload')
+  @Roles(UserRole.ADMIN, UserRole.TEACHER)
+  async requestUpload(
+    @Param('id', ParseIntPipe) id: number,
+    @Body()
+    body: { fileName: string; contentType: string; type: 'video' | 'content' },
+  ) {
+    return await this.getChapterUploadConfigUseCase.execute(
+      id,
+      body.fileName,
+      body.contentType,
+      body.type,
+    );
+  }
+
+  // 2. Confirmar que la subida terminó
+  @Post(':id/confirm-upload')
+  @Roles(UserRole.ADMIN, UserRole.TEACHER)
+  async confirmUpload(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: ConfirmUploadDto,
+  ) {
+    return await this.confirmUploadUseCase.execute(id, dto.fileUrl, dto.type);
   }
 }

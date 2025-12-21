@@ -43,8 +43,4 @@ export class ChapterOrmEntity {
   @ManyToOne(() => ModuleOrmEntity, (module) => module.chapters)
   @JoinColumn({ name: 'module_id' })
   module: ModuleOrmEntity;
-
-  //TODO: 1:1 Un capítulo puede tener un examen
-  // @OneToOne(() => ExamOrmEntity, (exam) => exam.chapter)
-  // exam: ExamOrmEntity;
 }

@@ -12,8 +12,10 @@ async function bootstrap() {
 
   // Configuración del Swagger
   const config = new DocumentBuilder()
-    .setTitle('LMS Backend API')
-    .setDescription('Documentación de la API del sistema de gestión de Aprendizaje (LMS)')
+    .setTitle('Edubba Backend API')
+    .setDescription(
+      'Documentación de la API del sistema de gestión de Aprendizaje Edubba',
+    )
     .setVersion('1.0')
     .addBearerAuth(
       {
@@ -22,15 +24,15 @@ async function bootstrap() {
         bearerFormat: 'JWT',
         name: 'JWT',
         description: 'Ingrese el token JWT',
-        in: 'header'
+        in: 'header',
       },
-      'access-token'
+      'access-token',
     )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document); // La documentación será accesible en esta dirección
-  
+
   await app.listen(process.env.PORT ?? 3000);
   console.log(`Application is running on: ${await app.getUrl()}`);
 }

@@ -14,6 +14,9 @@ import { TeachersModule } from './modules/teachers/teachers.module';
 import { SubjectsModule } from './modules/subjects/subjects.module';
 import { ModulesModule } from './modules/modules/modules.module';
 import { ChaptersModule } from './modules/chapters/chapters.module';
+import { ExamsModule } from './modules/exams/exams.module';
+import { QuestionsModule } from './modules/questions/questions.module';
+import { StorageModule } from 'src/shared/storage/storage.module';
 
 @Module({
   imports: [
@@ -75,6 +78,15 @@ import { ChaptersModule } from './modules/chapters/chapters.module';
 
     // Módulo de capitulos para cada módulo
     ChaptersModule,
+
+    // Módulo de examenes
+    ExamsModule,
+
+    // Módulo para las preguntas y sus opciones
+    QuestionsModule,
+
+    // Módulo para almacenar archivos
+    StorageModule,
   ],
   controllers: [AppController],
   providers: [AppService],

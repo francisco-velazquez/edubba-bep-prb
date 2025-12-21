@@ -12,10 +12,15 @@ import { ModuleTypeOrmRepository } from './infrastructure/providers/module-typeo
 import { ModulesController } from './infrastructure/controllers/modules.controller';
 import { SubjectsModule } from '../subjects/subjects.module';
 import { ChapterOrmEntity } from '../chapters/infrastructure/entities/chapter-orm.entity';
+import { ExamOrmEntity } from '../exams/infrastructure/entities/exam-orm.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ModuleOrmEntity, ChapterOrmEntity]),
+    TypeOrmModule.forFeature([
+      ModuleOrmEntity,
+      ChapterOrmEntity,
+      ExamOrmEntity,
+    ]),
     AuthModule,
     SubjectsModule,
   ],
