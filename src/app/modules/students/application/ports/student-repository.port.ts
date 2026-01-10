@@ -9,6 +9,11 @@ export interface IStudentRepositoryPort {
 
   // Usaremos softDelete para la baja lógica
   updateGrade(userId: string, gradeId: number): Promise<Student>;
+
+  updateGeneralInfo(
+    userId: string,
+    studentData: Partial<Student>,
+  ): Promise<Student>;
 }
 
 export function I_STUDENT_REPOSITORY(): (

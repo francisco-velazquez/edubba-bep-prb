@@ -1,15 +1,31 @@
-import { Controller, Post, Body, Get, Param, ParseUUIDPipe, Put, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Put,
+  HttpCode,
+  HttpStatus,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/common/guards/roles.guard'; 
-import { Roles } from 'src/common/decorators/roles.decorator'; 
-import { UserRole } from 'src/common/enums/user-role.enum'; 
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { UserRole } from 'src/common/enums/user-role.enum';
 import { CreateStudentDto } from '../../application/dtos/create-student.dto';
 import { CreateStudentUseCase } from '../../application/use-cases/create-student.use-case';
 import { FindStudentByIdUseCase } from '../../application/use-cases/find-student-by-id.use-case';
-import { UpdateStudentGradeDto, UpdateStudentUseCase } from '../../application/use-cases/update-student.use-case';
+import {
+  UpdateStudentGradeDto,
+  UpdateStudentUseCase,
+} from '../../application/use-cases/update-student.use-case';
+import { UpdateStudentGeneralInfoUseCase } from '../../application/use-cases/update-student-general-info.use-case';
 import { FindAllStudentsUseCase } from '../../application/use-cases/find-all-students.use-case';
 import { StudentResponseDto } from '../../application/dtos/student-response.dto';
+import { UpdateStudentDto } from '../../application/dtos/update-student.dto';
 
 @ApiTags('students')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -20,21 +36,24 @@ export class StudentsController {
     private readonly findAllStudentsUseCase: FindAllStudentsUseCase,
     private readonly findStudentByIdUseCase: FindStudentByIdUseCase,
     private readonly updateStudentGradeUseCase: UpdateStudentUseCase,
+    private readonly updateStudentGeneralInfoUseCase: UpdateStudentGeneralInfoUseCase,
   ) {}
 
   // POST /students
   @Post()
-  @Roles(UserRole.ADMIN) 
-  @ApiOperation({ summary: 'Crea el perfil académico de un estudiante (Requiere ADMIN)' })
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({
+    summary: 'Crea el perfil académico de un estudiante (Requiere ADMIN)',
+  })
   @ApiResponse({ status: 201, type: StudentResponseDto })
-  @HttpCode(HttpStatus.CREATED)
+  @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: CreateStudentDto): Promise<StudentResponseDto> {
     return this.createStudentUseCase.execute(dto);
   }
 
   // GET /students
   @Get()
-  @Roles(UserRole.ADMIN, UserRole.TEACHER) 
+  @Roles(UserRole.ADMIN, UserRole.TEACHER)
   @ApiOperation({ summary: 'Obtiene el listado de todos los estudiantes' })
   @ApiResponse({ status: 200, type: [StudentResponseDto] })
   async findAll(): Promise<StudentResponseDto[]> {
@@ -43,17 +62,34 @@ export class StudentsController {
 
   // GET /students/:id
   @Get(':id')
-  @Roles(UserRole.ADMIN, UserRole.TEACHER, UserRole.STUDENT) 
+  @Roles(UserRole.ADMIN, UserRole.TEACHER, UserRole.STUDENT)
   @ApiOperation({ summary: 'Obtiene un estudiante por ID' })
   @ApiResponse({ status: 200, type: StudentResponseDto })
-  async findById(@Param('id', ParseUUIDPipe) id: string): Promise<StudentResponseDto> {
+  async findById(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<StudentResponseDto> {
     return this.findStudentByIdUseCase.execute(id);
+  }
+
+  // PUT /students/:id
+  @Put(':id')
+  @Roles(UserRole.ADMIN, UserRole.TEACHER, UserRole.STUDENT)
+  @ApiOperation({
+    summary:
+      'Actualiza la información general del estudiante (incluyendo datos del usuario)',
+  })
+  @ApiResponse({ status: 200, type: StudentResponseDto })
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateStudentDto,
+  ): Promise<StudentResponseDto> {
+    return this.updateStudentGeneralInfoUseCase.execute(id, dto);
   }
 
   // PUT /students/:id/grade
   // Nuevo endpoint para la acción sugerida: actualizar el grado
   @Put(':id/grade')
-  @Roles(UserRole.ADMIN, UserRole.TEACHER) 
+  @Roles(UserRole.ADMIN, UserRole.TEACHER)
   @ApiOperation({ summary: 'Actualiza el grado académico de un estudiante' })
   @ApiResponse({ status: 200, type: StudentResponseDto })
   async updateGrade(

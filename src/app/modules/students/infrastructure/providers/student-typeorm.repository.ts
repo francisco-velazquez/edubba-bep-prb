@@ -1,8 +1,12 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StudentOrmEntity } from '../entities/student-orm.entity';
-import { Student, StudentId } from '../../domain/student.entity';
+import { Student } from '../../domain/student.entity';
 import { IStudentRepositoryPort } from '../../application/ports/student-repository.port';
 
 @Injectable()
@@ -38,7 +42,7 @@ export class StudentTypeOrmRepository implements IStudentRepositoryPort {
     };
   }
 
-// =======================================================================
+  // =======================================================================
   // INTERFACE IMPLEMENTATION
   // =======================================================================
 
@@ -50,18 +54,21 @@ export class StudentTypeOrmRepository implements IStudentRepositoryPort {
       return this.toDomainEntity(savedOrm);
     } catch (error) {
       // Manejar errores de clave duplicada (enrollmentCode) o FK
-      throw new InternalServerErrorException('Error saving student profile.', error.message);
+      throw new InternalServerErrorException(
+        'Error saving student profile.',
+        (error as Error).message,
+      );
     }
   }
 
   async findAll(): Promise<Student[]> {
     // Cargar la relación 'currentGrade' para el DTO
     const ormStudents = await this.studentRepository.find({
-      relations: ['currentGrade', 'user'], 
-      order: { enrollmentCode: 'ASC' }
+      relations: ['currentGrade', 'user'],
+      order: { enrollmentCode: 'ASC' },
     });
-    
-    return ormStudents.map(this.toDomainEntity);
+
+    return ormStudents.map((ormStudent) => this.toDomainEntity(ormStudent));
   }
 
   async findById(userId: string): Promise<Student | null> {
@@ -75,23 +82,58 @@ export class StudentTypeOrmRepository implements IStudentRepositoryPort {
     }
     return this.toDomainEntity(ormStudent);
   }
-  
+
   async updateGrade(userId: string, gradeId: number): Promise<Student> {
     const result = await this.studentRepository.update(
-        { userId }, 
-        { currentGradeId: gradeId, updatedAt: new Date() }
+      { userId },
+      { currentGradeId: gradeId, updatedAt: new Date() },
     );
-    
+
     if (result.affected === 0) {
-        throw new NotFoundException(`Student with ID ${userId} not found.`);
+      throw new NotFoundException(`Student with ID ${userId} not found.`);
     }
 
     // Obtener la entidad actualizada con las relaciones
     const updatedStudent = await this.findById(userId);
 
     if (!updatedStudent) {
-      throw new InternalServerErrorException('Failed to retrieve updated student.');
+      throw new InternalServerErrorException(
+        'Failed to retrieve updated student.',
+      );
     }
+    return updatedStudent;
+  }
+
+  async updateGeneralInfo(
+    userId: string,
+    studentData: Partial<Student>,
+  ): Promise<Student> {
+    const updateData: Partial<StudentOrmEntity> = {
+      updatedAt: new Date(),
+    };
+
+    if (studentData.enrollmentCode !== undefined) {
+      updateData.enrollmentCode = studentData.enrollmentCode;
+    }
+    if (studentData.currentGradeId !== undefined) {
+      updateData.currentGradeId = studentData.currentGradeId;
+    }
+
+    const result = await this.studentRepository.update({ userId }, updateData);
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`Student with ID ${userId} not found.`);
+    }
+
+    // Obtener la entidad actualizada con las relaciones
+    const updatedStudent = await this.findById(userId);
+
+    if (!updatedStudent) {
+      throw new InternalServerErrorException(
+        'Failed to retrieve updated student.',
+      );
+    }
+
     return updatedStudent;
   }
 }

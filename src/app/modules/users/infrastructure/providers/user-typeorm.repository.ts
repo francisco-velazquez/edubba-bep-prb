@@ -46,14 +46,18 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
     orm.email = user.email;
     orm.firstName = user.firstName;
     orm.lastName = user.lastName;
-    orm.passwordHash = user.passwordHash,
+    orm.passwordHash = user.passwordHash;
     orm.isActive = user.isActive;
     orm.dateOfBirth = user.dateOfBirth!;
     return orm;
   }
 
   // Función de mapeo (ORM Entity -> Domain Entity)
-  private toDomainEntity(ormUser: UserOrmEntity, role: string, passwordHash?: string): User {
+  private toDomainEntity(
+    ormUser: UserOrmEntity,
+    role: string,
+    passwordHash?: string,
+  ): User {
     return {
       ...ormUser,
       firstName: ormUser.firstName,
@@ -69,21 +73,25 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
   // INTERFACE IMPLEMENTATION
   // =======================================================================
 
-  async create(data: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'isActive'> & { passwordHash: string }): Promise<User> {
+  async create(
+    data: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'isActive'> & {
+      passwordHash: string;
+    },
+  ): Promise<User> {
     const newUserId = uuidv4();
     const now = new Date();
 
     const newUser: User = {
-        id: newUserId,
-        email: data.email,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        passwordHash: data.passwordHash,
-        role: data.role,
-        dateOfBirth: data.dateOfBirth,
-        isActive: true,
-        createdAt: now,
-        updatedAt: now,
+      id: newUserId,
+      email: data.email,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      passwordHash: data.passwordHash,
+      role: data.role,
+      dateOfBirth: data.dateOfBirth,
+      isActive: true,
+      createdAt: now,
+      updatedAt: now,
     };
 
     const ormUser = this.toOrmEntity(newUser);
@@ -108,7 +116,17 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
   async findByEmail(email: string): Promise<User | null> {
     const ormUser = await this.profilesRepository.findOne({
       where: { email },
-      select: ['id', 'email', 'firstName', 'lastName', 'isActive', 'dateOfBirth', 'passwordHash', 'createdAt', 'updatedAt'] as (keyof UserOrmEntity)[]
+      select: [
+        'id',
+        'email',
+        'firstName',
+        'lastName',
+        'isActive',
+        'dateOfBirth',
+        'passwordHash',
+        'createdAt',
+        'updatedAt',
+      ] as (keyof UserOrmEntity)[],
     });
 
     if (!ormUser) {
@@ -124,7 +142,7 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
       lastName: ormUser.lastName,
       role: role as User['role'],
       isActive: ormUser.isActive,
-      dateOfBirth: ormUser.dateOfBirth
+      dateOfBirth: ormUser.dateOfBirth,
     };
 
     return domainUser;
@@ -148,7 +166,7 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
       lastName: ormUser.lastName,
       role: role as User['role'],
       isActive: ormUser.isActive,
-      dateOfBirth: ormUser.dateOfBirth
+      dateOfBirth: ormUser.dateOfBirth,
     };
 
     return domainUser;
@@ -168,7 +186,7 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
           lastName: ormUser.lastName,
           role: role as User['role'],
           isActive: ormUser.isActive,
-          dateOfBirth: ormUser.dateOfBirth
+          dateOfBirth: ormUser.dateOfBirth,
         };
 
         return domainUser;
@@ -192,7 +210,7 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
           lastName: ormUser.lastName,
           role: role as User['role'],
           isActive: ormUser.isActive,
-          dateOfBirth: ormUser.dateOfBirth
+          dateOfBirth: ormUser.dateOfBirth,
         };
 
         return domainUser;
@@ -205,7 +223,9 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
   async save(user: User): Promise<User> {
     // ⚠️ Validación: El ID debe existir para guardar/actualizar
     if (!user.id) {
-        throw new InternalServerErrorException('Cannot save user without an existing ID.');
+      throw new InternalServerErrorException(
+        'Cannot save user without an existing ID.',
+      );
     }
 
     const ormUser = this.toOrmEntity(user);
@@ -250,7 +270,7 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
       const saveProfile = await manager.save(UserOrmEntity, ormUser);
 
       // Manejamos el rol
-      const currentRole = await this.getRole(user.id!);
+      const currentRole = await this.getRole(userToUpdate.id);
 
       if (currentRole && currentRole !== (user.role as string)) {
         // Si el rol existe y es diferente se actualiza

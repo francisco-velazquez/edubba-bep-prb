@@ -37,7 +37,7 @@ export class CreateUserUseCase {
       lastName: dto.lastName,
       role: dto.role,
       passwordHash: passwordHash,
-      dateOfBirth: new Date(dto.dateOfBirth)
+      dateOfBirth: new Date(dto.dateOfBirth),
       // isActive, createdAt, updatedAt son manejados por la entidad/repositorio
     });
 

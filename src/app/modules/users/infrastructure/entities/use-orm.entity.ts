@@ -14,14 +14,19 @@ export class UserOrmEntity {
   @Column({ name: 'last_name', type: 'text', nullable: true })
   lastName!: string;
 
-  @Column({ name: 'password_hash', type: 'text', select: false, nullable: true })
+  @Column({
+    name: 'password_hash',
+    type: 'text',
+    select: false,
+    nullable: true,
+  })
   passwordHash!: string;
 
   @Column({ name: 'is_active', type: 'boolean', default: true })
   isActive!: boolean;
 
   @Column({ name: 'date_of_birth', type: 'date' })
-  dateOfBirth: Date;z
+  dateOfBirth: Date;
 
   @Column({ name: 'created_at' })
   createdAt!: Date;
