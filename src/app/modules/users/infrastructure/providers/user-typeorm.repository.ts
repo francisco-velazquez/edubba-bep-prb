@@ -151,6 +151,17 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
   async findById(id: string): Promise<User | null> {
     const ormUser = await this.profilesRepository.findOne({
       where: { id },
+      select: [
+        'id',
+        'email',
+        'firstName',
+        'lastName',
+        'isActive',
+        'dateOfBirth',
+        'passwordHash',
+        'createdAt',
+        'updatedAt',
+      ] as (keyof UserOrmEntity)[],
     });
 
     if (!ormUser) {
@@ -233,13 +244,19 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
 
     // Usamos una transacción para garantizar que profiles y user_roles se actualicen juntos
     return this.dataSource.transaction(async (manager) => {
-      // Guaramos o actualizamos la entidad en profiles
+      // Guardamos o actualizamos la entidad en profiles
       const saveProfile = await manager.save(UserOrmEntity, ormUser);
 
       // Manejamos el rol
       const currentRole = await this.getRole(user.id);
 
-      if (currentRole && currentRole !== (user.role as string)) {
+      if (!currentRole) {
+        // Si el rol no existe, lo insertamos
+        await manager.query(
+          'INSERT INTO public.user_roles (user_id, role) VALUES ($1, $2)',
+          [user.id, user.role],
+        );
+      } else if (currentRole !== (user.role as string)) {
         // Si el rol existe y es diferente se actualiza
         await manager.query(
           'UPDATE public.user_roles SET role = $1 WHERE user_id = $2',
@@ -247,7 +264,7 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
         );
       }
 
-      // Devolvemos la entidad del dominiio con los datos actualizados
+      // Devolvemos la entidad del dominio con los datos actualizados
       return this.toDomainEntity(saveProfile, user.role!);
     });
   }

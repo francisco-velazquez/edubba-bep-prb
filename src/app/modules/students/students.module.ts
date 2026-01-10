@@ -16,6 +16,7 @@ import { FindAllStudentsUseCase } from './application/use-cases/find-all-student
 import { AuthModule } from '../auth/auth.module';
 import { UsersModule } from '../users/users.module'; // Para futuras interacciones (ej. crear user y student)
 import { GradeModule } from '../grades/grade.module'; // Para la relación (currentGradeId)
+import { SupabaseModule } from 'src/shared/supabase/supabase.module'; // Para actualizar contraseñas en Supabase Auth
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { GradeModule } from '../grades/grade.module'; // Para la relación (curr
     AuthModule, // Para JwtAuthGuard y RolesGuard
     UsersModule, // Para interactuar con los datos de usuario
     GradeModule, // Para validar la FK currentGradeId (si lo deseas implementar)
+    SupabaseModule, // Para actualizar contraseñas en Supabase Auth
   ],
   controllers: [StudentsController],
   providers: [

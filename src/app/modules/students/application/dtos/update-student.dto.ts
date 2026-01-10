@@ -5,6 +5,8 @@ import {
   IsString,
   IsEmail,
   IsDateString,
+  MinLength,
+  IsNotEmpty,
 } from 'class-validator';
 
 export class UpdateStudentDto {
@@ -37,4 +39,14 @@ export class UpdateStudentDto {
   @IsDateString()
   @IsOptional()
   dateOfBirth?: string;
+
+  @ApiProperty({
+    description: 'Nueva contraseña del usuario (mínimo 6 caracteres)',
+    required: false,
+    example: 'newPassword123',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(6)
+  password?: string;
 }
