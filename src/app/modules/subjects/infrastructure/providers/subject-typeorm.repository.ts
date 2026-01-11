@@ -17,6 +17,8 @@ export class SubjectTypeOrmRepository implements ISubjectRepositoryPort {
     return {
       id: orm.id,
       name: orm.name,
+      description: orm.description,
+      code: orm.code,
       isActive: orm.isActive,
       gradeId: orm.gradeId,
       grade: orm.grade,

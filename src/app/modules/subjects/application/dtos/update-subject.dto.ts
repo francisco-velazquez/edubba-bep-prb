@@ -1,4 +1,12 @@
-import { PartialType } from '@nestjs/swagger';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { CreateSubjectDto } from './create-subject.dto';
+import { IsBoolean } from 'class-validator';
 
-export class UpdateSubjectDto extends PartialType(CreateSubjectDto) {}
+export class UpdateSubjectDto extends PartialType(CreateSubjectDto) {
+  @ApiProperty({
+    example: true,
+    description: 'Indica si la materia está activa o no',
+  })
+  @IsBoolean()
+  isActive?: boolean;
+}

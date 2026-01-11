@@ -26,6 +26,12 @@ export class SubjectOrmEntity {
   @Column({ name: 'grade_id' })
   gradeId: number;
 
+  @Column({ type: 'text', nullable: true })
+  description: string;
+
+  @Column({ type: 'varchar', unique: true, nullable: true })
+  code: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

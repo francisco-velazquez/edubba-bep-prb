@@ -24,6 +24,7 @@ export class UpdateSubjectUseCase {
     const updatedSubject = await this.subjectRepository.save({
       ...existingSubject,
       ...dto,
+      isActive: dto.isActive ?? existingSubject.isActive,
       updatedAt: new Date(),
     });
 

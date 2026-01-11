@@ -11,6 +11,9 @@ export interface Subject {
 
   teachers?: Teacher[];
 
+  description?: string;
+  code?: string;
+
   createdAt: Date;
   updatedAt: Date;
 }

@@ -16,6 +16,8 @@ export class CreateSubjectUseCase {
       name: dto.name,
       isActive: true,
       gradeId: dto.gradeId,
+      description: dto.description,
+      code: dto.code,
     };
 
     const savedSubject = await this.subjectRepository.save(newSubject);
