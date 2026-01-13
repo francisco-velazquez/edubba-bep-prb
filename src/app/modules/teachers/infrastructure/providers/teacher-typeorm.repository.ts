@@ -84,4 +84,33 @@ export class TeacherTypeOrmRepository implements ITeacherRepositoryPort {
 
     return this.findById(userId) as Promise<Teacher>;
   }
+
+  async updateGeneralInfo(
+    userId: string,
+    teacherData: Partial<Teacher>,
+  ): Promise<Teacher> {
+    const updateData: Partial<TeacherOrmEntity> = {
+      updatedAt: new Date(),
+    };
+
+    if (teacherData.employeeNumber !== undefined) {
+      updateData.employeeNumber = teacherData.employeeNumber;
+    }
+
+    const result = await this.ormRepository.update({ userId }, updateData);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Teacher with ID ${userId} not found.`);
+    }
+
+    // Obtener la entidad actualizada con las relaciones
+    const updatedTeacher = await this.findById(userId);
+
+    if (!updatedTeacher) {
+      throw new NotFoundException(
+        `Failed to retrieve updated teacher with ID ${userId}`,
+      );
+    }
+
+    return updatedTeacher;
+  }
 }

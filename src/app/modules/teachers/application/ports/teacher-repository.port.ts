@@ -9,4 +9,8 @@ export interface ITeacherRepositoryPort {
     userId: string,
     subjectIds: AssignSubjectsDto,
   ): Promise<Teacher>;
+  updateGeneralInfo(
+    userId: string,
+    teacherData: Partial<Teacher>,
+  ): Promise<Teacher>;
 }

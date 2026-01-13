@@ -8,7 +8,7 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/shared/guards/roles.guard';
 import { CreateTeacherUseCase } from '../../application/use-cases/create-teacher.use-case';
@@ -20,6 +20,8 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { TeacherResponseDto } from '../../application/dtos/teacher-response.dto';
 import { FindTeacherByIdUseCase } from '../../application/use-cases/find-teacher-by-id.use-case';
 import { AssignSubjectsDto } from '../../application/dtos/assign-subjects.dto';
+import { UpdateTeacherGeneralInfoUseCase } from '../../application/use-cases/update-teacher.use-case';
+import { UpdateTeacherDto } from '../../application/dtos/update-teacher.dto';
 
 @ApiTags('teachers')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -30,6 +32,7 @@ export class TeachersController {
     private readonly findAllTeachersUseCase: FindAllTeachersUseCase,
     private readonly findTeacherByIdUseCase: FindTeacherByIdUseCase,
     private readonly asssignSubjectsUseCase: AssignSubjectsToTeacherUseCase,
+    private readonly updateTeacherGeneralInfoUseCase: UpdateTeacherGeneralInfoUseCase,
   ) {}
 
   @Post()
@@ -51,6 +54,18 @@ export class TeachersController {
   @ApiOperation({ summary: 'Get a teacher by ID' })
   async findById(@Body() userId: string): Promise<TeacherResponseDto> {
     return this.findTeacherByIdUseCase.execute(userId);
+  }
+
+  // PUT /teachers/:id
+  @Put(':id')
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: 'Update a teacher by ID' })
+  @ApiResponse({ status: 200, type: TeacherResponseDto })
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateTeacherDto,
+  ): Promise<TeacherResponseDto> {
+    return this.updateTeacherGeneralInfoUseCase.execute(id, dto);
   }
 
   @Put(':userId/subjects')

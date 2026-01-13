@@ -28,6 +28,9 @@ export class UserOrmEntity {
   @Column({ name: 'date_of_birth', type: 'date' })
   dateOfBirth: Date;
 
+  @Column({ name: 'number_phone', type: 'text', nullable: true })
+  number_phone!: string;
+
   @Column({ name: 'created_at' })
   createdAt!: Date;
 

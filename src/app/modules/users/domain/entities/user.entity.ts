@@ -9,6 +9,7 @@ export interface User {
   passwordHash: string;
   isActive: boolean;
   dateOfBirth: Date;
+  number_phone: string;
 
   // Datos del rol (user_roles)
   role?: UserRole;

@@ -49,6 +49,9 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
     orm.passwordHash = user.passwordHash;
     orm.isActive = user.isActive;
     orm.dateOfBirth = user.dateOfBirth!;
+    orm.number_phone = user.number_phone;
+    orm.createdAt = user.createdAt;
+    orm.updatedAt = user.updatedAt;
     return orm;
   }
 
@@ -66,6 +69,9 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
       role: role as User['role'], // Mapeamos el string del rol a nuestro Enum
       isActive: ormUser.isActive,
       dateOfBirth: ormUser.dateOfBirth,
+      number_phone: ormUser.number_phone,
+      createdAt: ormUser.createdAt,
+      updatedAt: ormUser.updatedAt,
     };
   }
 
@@ -89,6 +95,7 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
       passwordHash: data.passwordHash,
       role: data.role,
       dateOfBirth: data.dateOfBirth,
+      number_phone: data.number_phone,
       isActive: true,
       createdAt: now,
       updatedAt: now,
@@ -123,6 +130,7 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
         'lastName',
         'isActive',
         'dateOfBirth',
+        'number_phone',
         'passwordHash',
         'createdAt',
         'updatedAt',
@@ -158,6 +166,7 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
         'lastName',
         'isActive',
         'dateOfBirth',
+        'number_phone',
         'passwordHash',
         'createdAt',
         'updatedAt',
@@ -178,6 +187,7 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
       role: role as User['role'],
       isActive: ormUser.isActive,
       dateOfBirth: ormUser.dateOfBirth,
+      number_phone: ormUser.number_phone,
     };
 
     return domainUser;
@@ -198,6 +208,7 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
           role: role as User['role'],
           isActive: ormUser.isActive,
           dateOfBirth: ormUser.dateOfBirth,
+          number_phone: ormUser.number_phone,
         };
 
         return domainUser;
@@ -222,6 +233,7 @@ export class UserTypeOrmRepository implements IUserRepositoryPort {
           role: role as User['role'],
           isActive: ormUser.isActive,
           dateOfBirth: ormUser.dateOfBirth,
+          number_phone: ormUser.number_phone,
         };
 
         return domainUser;

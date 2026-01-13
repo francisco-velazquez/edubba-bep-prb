@@ -28,7 +28,8 @@ export class CreateStudentUseCase {
         !dto.password ||
         !dto.firstName ||
         !dto.lastName ||
-        !dto.dateOfBirth
+        !dto.dateOfBirth ||
+        !dto.number_phone
       ) {
         throw new BadRequestException(
           'Si userId no se proporciona, se deben incluir email, password, firstName, lastName y dateOfBirth para crear el usuario.',
@@ -41,6 +42,7 @@ export class CreateStudentUseCase {
       const userFirstName = dto.firstName;
       const userLastName = dto.lastName;
       const userDateOfBirth = dto.dateOfBirth;
+      const userNumberPhone = dto.number_phone;
 
       // Crear el usuario con rol STUDENT
       const newUser = await this.createUserUseCase.execute({
@@ -50,6 +52,7 @@ export class CreateStudentUseCase {
         lastName: userLastName,
         role: UserRole.STUDENT,
         dateOfBirth: userDateOfBirth,
+        number_phone: userNumberPhone,
       });
 
       userId = newUser.id;

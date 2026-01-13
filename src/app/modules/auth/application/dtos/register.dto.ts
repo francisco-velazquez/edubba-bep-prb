@@ -1,15 +1,23 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsDateString, IsEmail, IsNotEmpty, IsNumber, IsString, MinLength } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsDateString,
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  MinLength,
+} from 'class-validator';
 
 export class RegisterDto {
   @ApiProperty({
-    example: 'micorreo@email.com'
+    example: 'micorreo@email.com',
+    description: 'Correo electrónico del usuario',
   })
   @IsEmail()
   email!: string;
 
   @ApiProperty({
-    example: 'miContraseñaNueva'
+    example: 'miContraseñaNueva',
+    description: 'Contraseña del usuario (mínimo 6 caracteres)',
   })
   @IsString()
   @IsNotEmpty()
@@ -17,24 +25,34 @@ export class RegisterDto {
   password!: string;
 
   @ApiProperty({
-    example: 'Nombre(s)'
+    example: 'Nombre(s)',
+    description: 'Nombre(s) del usuario',
   })
   @IsString()
   @IsNotEmpty()
   firstName!: string;
 
   @ApiProperty({
-    example: 'Apellido(s)'
+    example: 'Apellido(s)',
+    description: 'Apellido(s) del usuario',
   })
   @IsString()
   @IsNotEmpty()
   lastName!: string;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Fecha de nacimiento (formato ISO 8601)',
-    example: '1999-12-31'
-  })  
+    example: '1999-12-31',
+  })
   @IsDateString()
   @IsNotEmpty()
   dateOfBirth: string;
+
+  @ApiProperty({
+    description: 'Número de teléfono del usuario',
+    example: '1234567890',
+  })
+  @IsString()
+  @IsNotEmpty()
+  number_phone: string;
 }

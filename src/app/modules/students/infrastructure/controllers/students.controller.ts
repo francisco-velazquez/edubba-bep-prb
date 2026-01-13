@@ -9,6 +9,7 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard';
@@ -26,6 +27,7 @@ import { UpdateStudentGeneralInfoUseCase } from '../../application/use-cases/upd
 import { FindAllStudentsUseCase } from '../../application/use-cases/find-all-students.use-case';
 import { StudentResponseDto } from '../../application/dtos/student-response.dto';
 import { UpdateStudentDto } from '../../application/dtos/update-student.dto';
+import { DeleteStudentUseCase } from '../../application/use-cases/delete-student.use-case';
 
 @ApiTags('students')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -37,6 +39,7 @@ export class StudentsController {
     private readonly findStudentByIdUseCase: FindStudentByIdUseCase,
     private readonly updateStudentGradeUseCase: UpdateStudentUseCase,
     private readonly updateStudentGeneralInfoUseCase: UpdateStudentGeneralInfoUseCase,
+    private readonly deleteStudentUseCase: DeleteStudentUseCase,
   ) {}
 
   // POST /students
@@ -73,7 +76,7 @@ export class StudentsController {
 
   // PUT /students/:id
   @Put(':id')
-  @Roles(UserRole.ADMIN, UserRole.TEACHER, UserRole.STUDENT)
+  @Roles(UserRole.ADMIN, UserRole.STUDENT)
   @ApiOperation({
     summary:
       'Actualiza la información general del estudiante (incluyendo datos del usuario)',
@@ -97,5 +100,13 @@ export class StudentsController {
     @Body() dto: UpdateStudentGradeDto,
   ): Promise<StudentResponseDto> {
     return this.updateStudentGradeUseCase.execute(id, dto);
+  }
+
+  @Delete(':id')
+  @Roles(UserRole.ADMIN)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Eliminar (lógicamente) estudiante' })
+  async delete(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    await this.deleteStudentUseCase.execute(id);
   }
 }

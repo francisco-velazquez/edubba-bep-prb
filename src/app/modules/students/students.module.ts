@@ -17,6 +17,7 @@ import { AuthModule } from '../auth/auth.module';
 import { UsersModule } from '../users/users.module'; // Para futuras interacciones (ej. crear user y student)
 import { GradeModule } from '../grades/grade.module'; // Para la relación (currentGradeId)
 import { SupabaseModule } from 'src/shared/supabase/supabase.module'; // Para actualizar contraseñas en Supabase Auth
+import { DeleteStudentUseCase } from './application/use-cases/delete-student.use-case';
 
 @Module({
   imports: [
@@ -40,8 +41,7 @@ import { SupabaseModule } from 'src/shared/supabase/supabase.module'; // Para ac
     FindStudentByIdUseCase,
     UpdateStudentUseCase,
     UpdateStudentGeneralInfoUseCase,
-
-    // Aquí se listan otros use cases si los hay...
+    DeleteStudentUseCase,
   ],
   exports: [
     // Exportar Casos de Uso que otros módulos puedan necesitar (ej. buscar un estudiante por ID)

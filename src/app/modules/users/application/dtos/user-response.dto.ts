@@ -8,6 +8,7 @@ export class UserResponseDto {
   lastName: string;
   role: UserRole;
   dateOfBirth: Date;
+  number_phone: string;
 
   constructor(user: User) {
     this.id = user.id;
@@ -16,5 +17,6 @@ export class UserResponseDto {
     this.lastName = user.lastName;
     this.role = user.role!;
     this.dateOfBirth = user.dateOfBirth;
+    this.number_phone = user.number_phone;
   }
 }

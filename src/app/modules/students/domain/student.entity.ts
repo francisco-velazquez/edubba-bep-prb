@@ -1,5 +1,5 @@
-import { Grade } from "../../grades/domain/grade.type";
-import { User } from "../../users/domain/entities/user.entity";
+import { Grade } from '../../grades/domain/grade.type';
+import { User } from '../../users/domain/entities/user.entity';
 
 export type StudentId = string; // UUID heredado de User
 export type GradeId = number; // ID del Grado Académico
@@ -13,7 +13,7 @@ export interface Student {
 
   /** Grado académico actual (Foreign Key a Grades) */
   currentGradeId: number;
-  
+
   currentGrade?: Grade;
   userProfile?: User;
 

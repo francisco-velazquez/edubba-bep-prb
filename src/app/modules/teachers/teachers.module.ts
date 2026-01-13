@@ -10,11 +10,16 @@ import { AssignSubjectsToTeacherUseCase } from './application/use-cases/assign-s
 import { I_TEACHER_REPOSITORY } from './domain/teacher.entity';
 import { TeacherTypeOrmRepository } from './infrastructure/providers/teacher-typeorm.repository';
 import { SubjectOrmEntity } from '../subjects/infrastructure/entities/subject-orm.entity';
+import { UsersModule } from '../users/users.module';
+import { UpdateTeacherGeneralInfoUseCase } from './application/use-cases/update-teacher.use-case';
+import { SupabaseModule } from 'src/shared/supabase/supabase.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([TeacherOrmEntity, SubjectOrmEntity]),
     AuthModule,
+    UsersModule,
+    SupabaseModule,
   ],
   controllers: [TeachersController],
   providers: [
@@ -22,11 +27,12 @@ import { SubjectOrmEntity } from '../subjects/infrastructure/entities/subject-or
     FindAllTeachersUseCase,
     FindTeacherByIdUseCase,
     AssignSubjectsToTeacherUseCase,
+    UpdateTeacherGeneralInfoUseCase,
     {
       provide: I_TEACHER_REPOSITORY,
       useClass: TeacherTypeOrmRepository,
     },
   ],
-  exports: [I_TEACHER_REPOSITORY],
+  exports: [I_TEACHER_REPOSITORY, CreateTeacherUseCase],
 })
 export class TeachersModule {}

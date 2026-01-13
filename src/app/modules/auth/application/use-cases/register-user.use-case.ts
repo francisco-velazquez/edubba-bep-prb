@@ -53,6 +53,7 @@ export class RegisterUserUseCase {
       role: UserRole.STUDENT,
       isActive: true,
       dateOfBirth: new Date(dto.dateOfBirth),
+      number_phone: dto.number_phone,
       createdAt: new Date(),
       updatedAt: new Date(),
     };

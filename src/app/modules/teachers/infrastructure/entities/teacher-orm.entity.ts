@@ -11,7 +11,7 @@ import {
   PrimaryColumn,
 } from 'typeorm';
 
-@Entity('teahers')
+@Entity('teachers')
 export class TeacherOrmEntity {
   @PrimaryColumn({ type: 'uuid', name: 'user_id', unique: true })
   userId: string;

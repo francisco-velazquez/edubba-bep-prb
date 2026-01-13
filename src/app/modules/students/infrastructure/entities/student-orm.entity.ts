@@ -1,4 +1,13 @@
-import { Entity, Column, PrimaryColumn, CreateDateColumn, UpdateDateColumn, JoinColumn, OneToOne, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  JoinColumn,
+  OneToOne,
+  ManyToOne,
+} from 'typeorm';
 import { GradeOrmEntity } from '../../../grades/infrastructure/entities/grade-orm.entity'; // Dependencia
 import { UserOrmEntity } from 'src/app/modules/users/infrastructure/entities/use-orm.entity';
 
@@ -9,7 +18,7 @@ export class StudentOrmEntity {
 
   @Column({ name: 'enrollment_code', unique: true })
   enrollmentCode: string;
-  
+
   @Column({ name: 'current_grade_id', nullable: true })
   currentGradeId: number | null;
 
@@ -24,8 +33,8 @@ export class StudentOrmEntity {
   // Relación 1:1 con la tabla users/profiles
   @OneToOne(() => UserOrmEntity)
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
-  user: UserOrmEntity; 
-  
+  user: UserOrmEntity;
+
   // Relación N:1 con la tabla grades
   @ManyToOne(() => GradeOrmEntity, (grade) => grade.students)
   @JoinColumn({ name: 'current_grade_id' })
