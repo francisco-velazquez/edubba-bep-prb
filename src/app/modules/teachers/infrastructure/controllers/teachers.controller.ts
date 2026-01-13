@@ -50,7 +50,7 @@ export class TeachersController {
   }
 
   @Get(':userId')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.TEACHER)
   @ApiOperation({ summary: 'Get a teacher by ID' })
   async findById(@Body() userId: string): Promise<TeacherResponseDto> {
     return this.findTeacherByIdUseCase.execute(userId);
