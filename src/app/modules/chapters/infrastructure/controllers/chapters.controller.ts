@@ -52,7 +52,10 @@ export class ChaptersController {
 
   @Post()
   @Roles(UserRole.ADMIN, UserRole.TEACHER)
-  @ApiOperation({ summary: 'Create a new chapter linked to a module' })
+  @ApiOperation({ 
+    summary: 'Create a new chapter',
+    description: 'Create a new chapter and associate it with a module.'
+  })
   async create(
     @Body() createChapterDto: CreateChapterDto,
   ): Promise<ChapterResponseDto> {
@@ -61,14 +64,23 @@ export class ChaptersController {
 
   @Get()
   @Roles(UserRole.ADMIN, UserRole.TEACHER, UserRole.STUDENT)
-  @ApiOperation({ summary: 'Get all chapters' })
+  @ApiOperation({ 
+    summary: 'Get all chapters',
+    description: 'Return a list of all existing chapters in the system'
+  })
   async findAll(): Promise<ChapterResponseDto[]> {
     return this.findAllChaptersUseCase.execute();
   }
 
   @Get(':id')
   @Roles(UserRole.ADMIN, UserRole.TEACHER, UserRole.STUDENT)
-  @ApiOperation({ summary: 'Get a chapter by id' })
+  @ApiOperation({ 
+    summary: 'Search of charpter by id',
+    description: 'Search and return a chapter by its id. The id must be an integer.'
+  })
+  @ApiQuery({
+    name: 'id'
+  })
   async findById(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<ChapterResponseDto> {
@@ -77,6 +89,10 @@ export class ChaptersController {
 
   @Get('by-module/:moduleId')
   @Roles(UserRole.ADMIN, UserRole.TEACHER, UserRole.STUDENT)
+  @ApiOperation({
+    summary:'Returns all capter',
+    description:' Returns all chapters belong to a specific module. The moduleId must be of type integer.'
+  })
   @ApiQuery({
     name: 'published',
     type: Boolean,
@@ -93,7 +109,10 @@ export class ChaptersController {
 
   @Put(':id')
   @Roles(UserRole.ADMIN, UserRole.TEACHER)
-  @ApiOperation({ summary: 'Actualiza un capítulo existente' })
+  @ApiOperation({ 
+    summary: 'Update an exisiting charpter',
+    description:'Modifies the information of an existing chapter. The id must be an integer.'
+  })
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateChapterDto,
@@ -104,13 +123,20 @@ export class ChaptersController {
   @Delete(':id')
   @Roles(UserRole.ADMIN, UserRole.TEACHER)
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Elimina un capítulo' })
+  @ApiOperation({ 
+    summary: 'Delete a chapter by its id',
+    description:'Deletes a chapter by its id. The id must be an integer.'
+  })
   async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
     await this.deleteChapterUseCase.execute(id);
   }
 
   @Post(':id/upload-video')
   @Roles(UserRole.ADMIN, UserRole.TEACHER)
+    @ApiOperation({ 
+    summary: 'Uploads a video file for a chapter.',
+    description:'Uploads a video file for a chapter. The file is sent as form-data with the key video. The id must be an integer.'
+  })
   @UseInterceptors(FileInterceptor('video'))
   async uploadVideo(
     @Param('id', ParseIntPipe) id: number,
