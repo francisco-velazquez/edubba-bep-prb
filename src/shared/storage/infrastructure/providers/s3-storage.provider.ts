@@ -73,6 +73,7 @@ export class S3StorageProvider implements IStoragePort {
     folder: string,
     contentType: string,
   ): Promise<{ uploadUrl: string; fileUrl: string }> {
+    console.log('Url', originalName, folder, contentType, this.bucketName);
     const fileExtension = extname(originalName);
     const key = `${folder}/${uuid()}${fileExtension}`;
 

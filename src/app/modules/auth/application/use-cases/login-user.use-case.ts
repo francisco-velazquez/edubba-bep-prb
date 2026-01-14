@@ -1,9 +1,9 @@
-import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
-import { FindUserByEmailUseCase } from "src/app/modules/users/application/use-cases/find-user-by-email.use-case";
-import type { ITokenServicePort } from "../../domain/ports/i-token-service.port";
-import { LoginDto } from "../dtos/login.dto";
-import { JwtPayload, LoginResult } from "../../domain/types/jwt-payload.type";
-import { UserResponseDto } from "src/app/modules/users/application/dtos/user-response.dto";
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { FindUserByEmailUseCase } from 'src/app/modules/users/application/use-cases/find-user-by-email.use-case';
+import type { ITokenServicePort } from '../../domain/ports/i-token-service.port';
+import { LoginDto } from '../dtos/login.dto';
+import { JwtPayload, LoginResult } from '../../domain/types/jwt-payload.type';
+import { UserResponseDto } from 'src/app/modules/users/application/dtos/user-response.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -19,14 +19,17 @@ export class LoginUserUseCase {
     const user = await this.findUserByEmailUseCase.executeForAuth(dto.email);
 
     // Verificamos el usuario y si esta activo
-    if(!user || !user.isActive ) {
+    if (!user || !user.isActive) {
       throw new UnauthorizedException('Credentials invalid or inactive user');
     }
 
     // Validamos la contraseña
-    const isPasswordValid = await bcrypt.compare(dto.password, user.passwordHash);
+    const isPasswordValid = await bcrypt.compare(
+      dto.password,
+      user.passwordHash,
+    );
 
-    if(!isPasswordValid) {
+    if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid Credentials');
     }
 

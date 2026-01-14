@@ -1,3 +1,4 @@
+import { Chapter } from '../../chapters/domain/chapter.entity';
 import { Subject } from '../../subjects/domain/subject.entity';
 
 export interface Module {
@@ -11,7 +12,7 @@ export interface Module {
   subject?: Subject;
 
   // Relación 1:N con Capitulos (chapters)
-  chapters?: any[];
+  chapters?: Chapter[];
 
   createdAt: Date;
   updatedAt: Date;
