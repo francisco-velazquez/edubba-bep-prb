@@ -134,7 +134,7 @@ export class ChaptersController {
 
   @Post(':id/upload-video')
   @Roles(UserRole.ADMIN, UserRole.TEACHER)
-    @ApiOperation({ 
+  @ApiOperation({ 
     summary: 'Uploads a video file for a chapter.',
     description:'Uploads a video file for a chapter. The file is sent as form-data with the key video. The id must be an integer.'
   })
@@ -148,6 +148,10 @@ export class ChaptersController {
 
   @Post(':id/upload-content')
   @Roles(UserRole.ADMIN, UserRole.TEACHER)
+  @ApiOperation({ 
+    summary: 'Receives content files',
+    description:'Receives a content file via multipart/form-data (field file) and processes it. The id must be an integer.'
+  })
   @UseInterceptors(FileInterceptor('file'))
   async uploadContent(
     @Param('id', ParseIntPipe) id: number,
@@ -159,6 +163,10 @@ export class ChaptersController {
   // 1. Solicitar URL para subir
   @Post(':id/request-upload')
   @Roles(UserRole.ADMIN, UserRole.TEACHER)
+   @ApiOperation({ 
+    summary: 'Upload file directly to the cloud',
+    description:'The client requests permission to upload a file. The server returns a configuration with a signed S3/Cloudflare URL so the client can upload the file directly to the cloud without sending the binary through the backend.'
+  })
   async requestUpload(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: RequestUrlDto,
@@ -175,6 +183,10 @@ export class ChaptersController {
   // 2. Confirmar que la subida terminó
   @Post(':id/confirm-upload')
   @Roles(UserRole.ADMIN, UserRole.TEACHER)
+  @ApiOperation({ 
+    summary: 'File upload confirmation.',
+    description:'Once the client has uploaded the file to the cloud using the URL from the previous step, it calls this endpoint to notify the backend to update the chapter record with the new file URL.'
+  })
   async confirmUpload(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: ConfirmUploadDto,
