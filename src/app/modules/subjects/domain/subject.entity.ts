@@ -1,4 +1,5 @@
 import { Grade } from '../../grades/domain/grade.type';
+import { Module } from '../../modules/domain/module.entity';
 import { Teacher } from '../../teachers/domain/teacher.entity';
 
 export interface Subject {
@@ -8,6 +9,7 @@ export interface Subject {
 
   gradeId: number;
   grade?: Grade;
+  modules?: Module[];
 
   teachers?: Teacher[];
 

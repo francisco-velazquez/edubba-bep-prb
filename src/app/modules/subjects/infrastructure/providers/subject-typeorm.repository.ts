@@ -23,6 +23,7 @@ export class SubjectTypeOrmRepository implements ISubjectRepositoryPort {
       gradeId: orm.gradeId,
       grade: orm.grade,
       teachers: orm.teachers,
+      modules: orm.modules,
       createdAt: orm.createdAt,
       updatedAt: orm.updatedAt,
     };
@@ -46,7 +47,7 @@ export class SubjectTypeOrmRepository implements ISubjectRepositoryPort {
   async findAll(): Promise<Subject[]> {
     const results = await this.ormRepository.find({
       // where: { isActive: true },
-      relations: ['grade'],
+      relations: ['grade', 'modules'],
       order: { name: 'ASC' },
     });
 
@@ -56,7 +57,15 @@ export class SubjectTypeOrmRepository implements ISubjectRepositoryPort {
   async findById(id: number): Promise<Subject | null> {
     const result = await this.ormRepository.findOne({
       where: { id },
-      relations: ['grade'],
+      relations: ['grade', 'modules', 'modules.chapters'],
+      order: {
+        modules: {
+          orderIndex: 'ASC', // Ordenas los módulos
+          chapters: {
+            orderIndex: 'ASC', // Ordenas los capítulos dentro del módulo
+          },
+        },
+      },
     });
 
     return result ? this.toDomain(result) : null;
@@ -65,7 +74,7 @@ export class SubjectTypeOrmRepository implements ISubjectRepositoryPort {
   async findByGradeId(gradeId: number): Promise<Subject[]> {
     const results = await this.ormRepository.find({
       where: { gradeId },
-      relations: ['grade'],
+      relations: ['grade', 'modules'],
       order: { name: 'ASC' },
     });
 

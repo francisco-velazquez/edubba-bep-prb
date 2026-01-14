@@ -20,6 +20,7 @@ export class ModuleTypeOrmRepository implements IModuleRepositoryPort {
       orderIndex: orm.orderIndex,
       isPublished: orm.isPublished,
       subjectId: orm.subjectId,
+      chapters: orm.chapters,
       subject: orm.subject,
       createdAt: orm.createdAt,
       updatedAt: orm.updatedAt,
@@ -53,7 +54,7 @@ export class ModuleTypeOrmRepository implements IModuleRepositoryPort {
   async findById(id: number): Promise<Module | null> {
     const result = await this.ormRepository.findOne({
       where: { id },
-      relations: ['subject'],
+      relations: ['subject', 'chapters'],
     });
 
     return result ? this.toDomain(result) : null;

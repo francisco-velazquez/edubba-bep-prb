@@ -33,6 +33,7 @@ import { UploadChapterMediaUseCase } from '../../application/use-cases/upload-ch
 import { GetChapterUploadConfigUseCase } from '../../application/use-cases/get-chapter-upload-config.use-case';
 import { ConfirmUploadDto } from '../../application/dtos/confirm-upload.dto';
 import { ConfirmChapterUploadUseCase } from '../../application/use-cases/confirm-chapter-upload.use-case';
+import { RequestUrlDto } from '../../application/dtos/request-url.dto';
 
 @ApiTags('chapters')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -134,9 +135,9 @@ export class ChaptersController {
   @Roles(UserRole.ADMIN, UserRole.TEACHER)
   async requestUpload(
     @Param('id', ParseIntPipe) id: number,
-    @Body()
-    body: { fileName: string; contentType: string; type: 'video' | 'content' },
+    @Body() body: RequestUrlDto,
   ) {
+    console.log('NEPE', body.fileName);
     return await this.getChapterUploadConfigUseCase.execute(
       id,
       body.fileName,

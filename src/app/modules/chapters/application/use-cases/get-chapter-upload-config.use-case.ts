@@ -18,6 +18,7 @@ export class GetChapterUploadConfigUseCase {
     contentType: string,
     type: 'video' | 'content',
   ) {
+    console.log(fileName, contentType);
     const chapter = await this.chapterRepository.findById(chapterId);
     if (!chapter) throw new NotFoundException('Chapter not found');
 
