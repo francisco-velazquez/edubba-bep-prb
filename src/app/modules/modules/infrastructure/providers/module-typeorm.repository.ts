@@ -4,12 +4,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ModuleOrmEntity } from '../entities/module-orm.entity';
 import { Repository } from 'typeorm';
 import { Module } from '../../domain/module.entity';
+import { ChapterOrmEntity } from 'src/app/modules/chapters/infrastructure/entities/chapter-orm.entity';
 
 @Injectable()
 export class ModuleTypeOrmRepository implements IModuleRepositoryPort {
   constructor(
     @InjectRepository(ModuleOrmEntity)
     private readonly ormRepository: Repository<ModuleOrmEntity>,
+    @InjectRepository(ChapterOrmEntity)
+    private readonly chapterRepository: Repository<ChapterOrmEntity>,
   ) {}
 
   // Mappers
@@ -61,6 +64,18 @@ export class ModuleTypeOrmRepository implements IModuleRepositoryPort {
   }
 
   async delete(id: number): Promise<boolean> {
+    // Buscamos el módulo para poder identificar si tiene capitulos ligados
+    const module = await this.findById(id);
+
+    // Creamos un array de promesas y esperamos a que todas terminen
+    if (module?.chapters) {
+      await Promise.all(
+        module.chapters.map(async (chapter) => {
+          return await this.chapterRepository.delete(chapter.id);
+        }),
+      );
+    }
+
     const result = await this.ormRepository.delete(id);
 
     if (result.affected === 1) {

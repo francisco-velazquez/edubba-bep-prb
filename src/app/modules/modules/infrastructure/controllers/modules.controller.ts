@@ -68,10 +68,11 @@ export class ModulesController {
     return this.updateModuleUseCase.execute(id, dto);
   }
 
-  @Delete()
+  @Delete(':id')
   @Roles(UserRole.ADMIN, UserRole.TEACHER)
   @ApiOperation({ summary: 'Delete a module' })
   async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    console.log('delete');
     await this.deleteModuleUseCase.execute(id);
   }
 }
