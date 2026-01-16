@@ -18,6 +18,8 @@ import { UsersModule } from '../users/users.module'; // Para futuras interaccion
 import { GradeModule } from '../grades/grade.module'; // Para la relación (currentGradeId)
 import { SupabaseModule } from 'src/shared/supabase/supabase.module'; // Para actualizar contraseñas en Supabase Auth
 import { DeleteStudentUseCase } from './application/use-cases/delete-student.use-case';
+import { SubjectsModule } from '../subjects/subjects.module';
+import { StudentSubjectByGradeUseCase } from './application/use-cases/find-student-subjects-by-grade.use-case';
 
 @Module({
   imports: [
@@ -26,6 +28,7 @@ import { DeleteStudentUseCase } from './application/use-cases/delete-student.use
     UsersModule, // Para interactuar con los datos de usuario
     GradeModule, // Para validar la FK currentGradeId (si lo deseas implementar)
     SupabaseModule, // Para actualizar contraseñas en Supabase Auth
+    SubjectsModule, // Para obtener las asignaturas de un alumno
   ],
   controllers: [StudentsController],
   providers: [
@@ -42,6 +45,7 @@ import { DeleteStudentUseCase } from './application/use-cases/delete-student.use
     UpdateStudentUseCase,
     UpdateStudentGeneralInfoUseCase,
     DeleteStudentUseCase,
+    StudentSubjectByGradeUseCase,
   ],
   exports: [
     // Exportar Casos de Uso que otros módulos puedan necesitar (ej. buscar un estudiante por ID)

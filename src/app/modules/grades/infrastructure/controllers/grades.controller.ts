@@ -70,7 +70,7 @@ export class GradesController {
     summary: 'Obtención de grado por ID',
     description: 'Obtiene un grado académico dado su identificador',
   })
-  @Roles(UserRole.ADMIN, UserRole.TEACHER)
+  @Roles(UserRole.ADMIN, UserRole.TEACHER, UserRole.STUDENT)
   async findById(@Param('id', ParseIntPipe) id: number): Promise<Grade> {
     return this.findGradeByIdUseCase.execute(id);
   }

@@ -1,6 +1,6 @@
-import { GradeResponseDto } from "src/app/modules/grades/application/dtos/grade-response.dto";
-import { Student } from "../../domain/student.entity";
-import { userProfileDto } from "src/app/modules/users/application/dtos/user-profile.dto";
+import { GradeResponseDto } from 'src/app/modules/grades/application/dtos/grade-response.dto';
+import { Student } from '../../domain/student.entity';
+import { userProfileDto } from 'src/app/modules/users/application/dtos/user-profile.dto';
 
 export class StudentResponseDto {
   userId: string;
@@ -13,15 +13,15 @@ export class StudentResponseDto {
   constructor(student: Student) {
     this.userId = student.userId;
     this.enrollmentCode = student.enrollmentCode;
-    this.currentGradeId = this.currentGradeId;
+    this.currentGradeId = student.currentGradeId;
 
-    if(student.userProfile) {
+    if (student.userProfile) {
       this.user = new userProfileDto(student.userProfile);
     } else {
       this.user = {} as userProfileDto;
     }
 
-    if(student.currentGrade) {
+    if (student.currentGrade) {
       this.cureentGrade = new GradeResponseDto(student.currentGrade);
     }
   }

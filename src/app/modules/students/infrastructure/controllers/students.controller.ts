@@ -28,6 +28,8 @@ import { FindAllStudentsUseCase } from '../../application/use-cases/find-all-stu
 import { StudentResponseDto } from '../../application/dtos/student-response.dto';
 import { UpdateStudentDto } from '../../application/dtos/update-student.dto';
 import { DeleteStudentUseCase } from '../../application/use-cases/delete-student.use-case';
+import { StudentSubjectByGradeResponseDto } from '../../application/dtos/student-subject-by-grade-response.dto';
+import { StudentSubjectByGradeUseCase } from '../../application/use-cases/find-student-subjects-by-grade.use-case';
 
 @ApiTags('students')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -40,6 +42,7 @@ export class StudentsController {
     private readonly updateStudentGradeUseCase: UpdateStudentUseCase,
     private readonly updateStudentGeneralInfoUseCase: UpdateStudentGeneralInfoUseCase,
     private readonly deleteStudentUseCase: DeleteStudentUseCase,
+    private readonly findStudentSubjectsByGradeUseCase: StudentSubjectByGradeUseCase,
   ) {}
 
   // POST /students
@@ -108,5 +111,15 @@ export class StudentsController {
   @ApiOperation({ summary: 'Eliminar (lógicamente) estudiante' })
   async delete(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     await this.deleteStudentUseCase.execute(id);
+  }
+
+  @Get(':id/subjects')
+  @Roles(UserRole.ADMIN, UserRole.TEACHER)
+  @ApiOperation({ summary: 'Obtiene el grado de un estudiante' })
+  @ApiResponse({ status: 200, type: [StudentResponseDto] })
+  async findStudentSubjectsByGrade(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<StudentSubjectByGradeResponseDto> {
+    return this.findStudentSubjectsByGradeUseCase.execute(id);
   }
 }
