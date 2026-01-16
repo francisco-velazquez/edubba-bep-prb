@@ -5,6 +5,7 @@ import { I_SUBJECT_REPOSITORY } from 'src/app/modules/subjects/domain/subject.en
 import { StudentSubjectByGradeResponseDto } from '../dtos/student-subject-by-grade-response.dto';
 import type { ISubjectRepositoryPort } from 'src/app/modules/subjects/application/ports/subject-repository.port';
 import { SubjectResponseDto } from 'src/app/modules/subjects/application/dtos/subject-response.dto';
+import { GradeResponseDto } from 'src/app/modules/grades/application/dtos/grade-response.dto';
 
 @Injectable()
 export class StudentSubjectByGradeUseCase {
@@ -28,6 +29,7 @@ export class StudentSubjectByGradeUseCase {
 
     const studentSubjects = new StudentSubjectByGradeResponseDto(
       student.userId,
+      new GradeResponseDto(student.currentGrade!),
       subjects.map((subject) => new SubjectResponseDto(subject)),
     );
 
