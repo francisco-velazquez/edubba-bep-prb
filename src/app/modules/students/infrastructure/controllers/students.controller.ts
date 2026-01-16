@@ -114,7 +114,7 @@ export class StudentsController {
   }
 
   @Get(':id/subjects')
-  @Roles(UserRole.ADMIN, UserRole.TEACHER)
+  @Roles(UserRole.ADMIN, UserRole.TEACHER, UserRole.STUDENT)
   @ApiOperation({ summary: 'Obtiene el grado de un estudiante' })
   @ApiResponse({ status: 200, type: [StudentResponseDto] })
   async findStudentSubjectsByGrade(
