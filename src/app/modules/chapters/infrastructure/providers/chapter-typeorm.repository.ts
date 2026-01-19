@@ -17,6 +17,7 @@ export class ChapterTypeOrmRepository implements IChapterRepositoryPort {
     return {
       id: orm.id,
       title: orm.title,
+      description: orm.description,
       videoUrl: orm.videoUrl,
       contentUrl: orm.contentUrl,
       orderIndex: orm.orderIndex,

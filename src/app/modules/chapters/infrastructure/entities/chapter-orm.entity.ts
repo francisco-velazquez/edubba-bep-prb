@@ -16,6 +16,9 @@ export class ChapterOrmEntity {
   @Column({ type: 'varchar' })
   title: string;
 
+  @Column({ type: 'text' })
+  description: string;
+
   @Column({ name: 'video_url', nullable: false })
   videoUrl: string;
 

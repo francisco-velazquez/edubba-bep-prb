@@ -3,6 +3,7 @@ import { Module } from '../../modules/domain/module.entity';
 export interface Chapter {
   id: number;
   title: string;
+  description?: string;
   videoUrl?: string;
   contentUrl?: string;
   orderIndex: number;

@@ -6,10 +6,15 @@ import { CalculateSubjectProgressUseCase } from './application/use-cases/calcula
 import { ToggleChapterCompletionUseCase } from './application/use-cases/toggle-chapter-completion.use-case';
 import { ProgressController } from './infrastructure/controllers/progress.controller';
 import { ProgressTypeOrmRepository } from './infrastructure/repositories/progress-typeorm.repository';
+import { StudentSubjectStatusOrmEntity } from './infrastructure/entities/student-subject-status-orm.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([StudentProgressOrmEntity, ChapterOrmEntity]),
+    TypeOrmModule.forFeature([
+      StudentProgressOrmEntity,
+      ChapterOrmEntity,
+      StudentSubjectStatusOrmEntity,
+    ]),
   ],
   controllers: [ProgressController],
   providers: [

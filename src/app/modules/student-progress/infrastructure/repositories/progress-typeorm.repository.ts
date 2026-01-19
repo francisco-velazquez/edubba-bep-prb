@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { IProgressRepositoryPort } from '../../application/ports/progress-repository.port';
 import { StudentProgressOrmEntity } from '../entities/student-progress-orm.entity';
 import { ChapterOrmEntity } from 'src/app/modules/chapters/infrastructure/entities/chapter-orm.entity';
+import { StudentSubjectStatusOrmEntity } from '../entities/student-subject-status-orm.entity';
 
 @Injectable()
 export class ProgressTypeOrmRepository implements IProgressRepositoryPort {
@@ -12,6 +13,8 @@ export class ProgressTypeOrmRepository implements IProgressRepositoryPort {
     private readonly progressRepo: Repository<StudentProgressOrmEntity>,
     @InjectRepository(ChapterOrmEntity)
     private readonly chapterRepo: Repository<ChapterOrmEntity>,
+    @InjectRepository(StudentSubjectStatusOrmEntity)
+    private readonly statusRepo: Repository<StudentSubjectStatusOrmEntity>,
   ) {}
 
   async markAsCompleted(userId: string, chapterId: number): Promise<void> {
@@ -50,5 +53,23 @@ export class ProgressTypeOrmRepository implements IProgressRepositoryPort {
       where: { userId, chapterId },
     });
     return count > 0;
+  }
+
+  async updateSubjectStatus(
+    userId: string,
+    subjectId: number,
+    data: { lastActivityAt: Date; finishedAt: Date | null },
+  ): Promise<void> {
+    // Usamos upsert para manejar la creación (started_at se pone por default en DB)
+    // o la actualización de las fechas.
+    await this.statusRepo.upsert(
+      {
+        userId,
+        subjectId,
+        lastActivityAt: data.lastActivityAt,
+        finishedAt: data.finishedAt,
+      },
+      ['userId', 'subjectId'], // Llave compuesta para identificar el registro
+    );
   }
 }

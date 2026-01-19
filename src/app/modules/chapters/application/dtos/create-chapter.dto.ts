@@ -19,6 +19,14 @@ export class CreateChapterDto {
   title: string;
 
   @ApiProperty({
+    description: 'Description for the chapter',
+    example: 'This is the introduction chapter',
+  })
+  @IsString()
+  @IsOptional()
+  description?: string;
+
+  @ApiProperty({
     description: 'Id of the module to which the chapter belongs',
     example: 1,
   })

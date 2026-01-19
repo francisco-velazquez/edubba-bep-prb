@@ -4,6 +4,7 @@ import { Chapter } from '../../domain/chapter.entity';
 export class ChapterResponseDto {
   id: number;
   title: string;
+  description?: string;
   videoUrl: string | null;
   contentUrl: string | null;
   orderIndex: number;
@@ -16,6 +17,7 @@ export class ChapterResponseDto {
   constructor(chapter: Chapter) {
     this.id = chapter.id;
     this.title = chapter.title;
+    this.description = chapter.description || '';
     this.videoUrl = chapter.videoUrl || null;
     this.contentUrl = chapter.contentUrl || null;
     this.orderIndex = chapter.orderIndex;
