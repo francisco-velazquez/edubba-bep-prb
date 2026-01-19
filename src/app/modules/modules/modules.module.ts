@@ -13,6 +13,7 @@ import { ModulesController } from './infrastructure/controllers/modules.controll
 import { SubjectsModule } from '../subjects/subjects.module';
 import { ChapterOrmEntity } from '../chapters/infrastructure/entities/chapter-orm.entity';
 import { ExamOrmEntity } from '../exams/infrastructure/entities/exam-orm.entity';
+import { FindChaptersByModuleIdUseCase } from './application/use-cases/find-chapters-by-module-id.use-case';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { ExamOrmEntity } from '../exams/infrastructure/entities/exam-orm.entity'
     FindModuleByIdUseCase,
     UpdateModuleUseCase,
     DeleteModuleUseCase,
+    FindChaptersByModuleIdUseCase,
     {
       provide: I_MODULE_REPOSITORY,
       useClass: ModuleTypeOrmRepository,

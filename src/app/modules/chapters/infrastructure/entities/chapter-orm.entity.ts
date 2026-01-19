@@ -16,7 +16,7 @@ export class ChapterOrmEntity {
   @Column({ type: 'varchar' })
   title: string;
 
-  @Column({ name: 'video_url', nullable: true })
+  @Column({ name: 'video_url', nullable: false })
   videoUrl: string;
 
   @Column({ name: 'content_url', nullable: true })

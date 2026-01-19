@@ -22,6 +22,8 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { CreateModuleDto } from '../../application/dtos/create-module.dto';
 import { ModuleResponseDto } from '../../application/dtos/module-response.dto';
 import { UpdateModuleDto } from '../../application/dtos/update-module.dto';
+import { ChaptersByModuleResponseDto } from '../../application/dtos/chapters-by-module-id.dto';
+import { FindChaptersByModuleIdUseCase } from '../../application/use-cases/find-chapters-by-module-id.use-case';
 
 @ApiTags('modules')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -33,6 +35,7 @@ export class ModulesController {
     private readonly findModuleByIdUseCase: FindModuleByIdUseCase,
     private readonly updateModuleUseCase: UpdateModuleUseCase,
     private readonly deleteModuleUseCase: DeleteModuleUseCase,
+    private readonly findChaptersByModuleIdUseCase: FindChaptersByModuleIdUseCase,
   ) {}
 
   @Post()
@@ -74,5 +77,14 @@ export class ModulesController {
   async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
     console.log('delete');
     await this.deleteModuleUseCase.execute(id);
+  }
+
+  @Get(':id/chapters')
+  @Roles(UserRole.ADMIN, UserRole.TEACHER, UserRole.STUDENT)
+  @ApiOperation({ summary: 'List all chapters of a module' })
+  async findChaptersByModuleId(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<ChaptersByModuleResponseDto> {
+    return this.findChaptersByModuleIdUseCase.execute(id);
   }
 }
