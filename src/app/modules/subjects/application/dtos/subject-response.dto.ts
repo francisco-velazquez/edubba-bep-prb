@@ -1,6 +1,7 @@
 import { GradeResponseDto } from 'src/app/modules/grades/application/dtos/grade-response.dto';
 import { Subject } from '../../domain/subject.entity';
 import { ModuleResponseDto } from 'src/app/modules/modules/application/dtos/module-response.dto';
+import { ProgressResultDto } from 'src/app/modules/student-progress/application/dtos/calculate-progress-result.dto';
 
 export class SubjectResponseDto {
   id: number;
@@ -12,6 +13,11 @@ export class SubjectResponseDto {
   code?: string;
   createdAt: Date;
   updatedAt: Date;
+  progress?: ProgressResultDto;
+
+  setProgress(progress: ProgressResultDto) {
+    this.progress = progress;
+  }
 
   constructor(subject: Subject) {
     console.log(`Subject`, JSON.stringify(subject));

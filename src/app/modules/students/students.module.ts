@@ -20,6 +20,7 @@ import { SupabaseModule } from 'src/shared/supabase/supabase.module'; // Para ac
 import { DeleteStudentUseCase } from './application/use-cases/delete-student.use-case';
 import { SubjectsModule } from '../subjects/subjects.module';
 import { StudentSubjectByGradeUseCase } from './application/use-cases/find-student-subjects-by-grade.use-case';
+import { ProgressModule } from '../student-progress/student-progres.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { StudentSubjectByGradeUseCase } from './application/use-cases/find-stude
     GradeModule, // Para validar la FK currentGradeId (si lo deseas implementar)
     SupabaseModule, // Para actualizar contraseñas en Supabase Auth
     SubjectsModule, // Para obtener las asignaturas de un alumno
+    ProgressModule, // Para saber el porcentaje de avance que tiene el alumno sobre una asignatura
   ],
   controllers: [StudentsController],
   providers: [

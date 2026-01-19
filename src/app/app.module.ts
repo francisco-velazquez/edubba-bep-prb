@@ -17,6 +17,7 @@ import { ChaptersModule } from './modules/chapters/chapters.module';
 import { ExamsModule } from './modules/exams/exams.module';
 import { QuestionsModule } from './modules/questions/questions.module';
 import { StorageModule } from 'src/shared/storage/storage.module';
+import { ProgressModule } from './modules/student-progress/student-progres.module';
 
 @Module({
   imports: [
@@ -87,6 +88,9 @@ import { StorageModule } from 'src/shared/storage/storage.module';
 
     // Módulo para almacenar archivos
     StorageModule,
+
+    // Módulo para el manejo del progreso del estudiante en una asignatura
+    ProgressModule,
   ],
   controllers: [AppController],
   providers: [AppService],
