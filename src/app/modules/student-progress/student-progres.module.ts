@@ -7,6 +7,7 @@ import { ToggleChapterCompletionUseCase } from './application/use-cases/toggle-c
 import { ProgressController } from './infrastructure/controllers/progress.controller';
 import { ProgressTypeOrmRepository } from './infrastructure/repositories/progress-typeorm.repository';
 import { StudentSubjectStatusOrmEntity } from './infrastructure/entities/student-subject-status-orm.entity';
+import { ChaptersModule } from '../chapters/chapters.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { StudentSubjectStatusOrmEntity } from './infrastructure/entities/student
       ChapterOrmEntity,
       StudentSubjectStatusOrmEntity,
     ]),
+    ChaptersModule,
   ],
   controllers: [ProgressController],
   providers: [

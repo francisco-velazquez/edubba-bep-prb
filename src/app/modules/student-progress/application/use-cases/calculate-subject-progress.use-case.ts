@@ -28,6 +28,7 @@ export class CalculateSubjectProgressUseCase {
       percentage,
       completedChapters: completedCount,
       totalChapters,
+      completedChapterIds: completedIds,
     };
 
     return result;

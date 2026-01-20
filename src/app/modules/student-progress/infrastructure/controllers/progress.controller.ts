@@ -38,10 +38,9 @@ export class ProgressController {
   async completeChapter(
     @Req() req: RequestWithUser, // Tipado explícito para evitar 'any'
     @Param('chapterId', ParseIntPipe) chapterId: number,
-    @Param('subjectId', ParseIntPipe) subjectId: number,
   ): Promise<void> {
     const userId = req.user.id;
-    return await this.toggleCompletion.execute(userId, chapterId, subjectId);
+    return await this.toggleCompletion.execute(userId, chapterId);
   }
 
   @Get('subject/:subjectId')
