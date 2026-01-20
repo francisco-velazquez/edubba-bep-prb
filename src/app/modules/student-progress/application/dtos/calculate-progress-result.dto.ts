@@ -3,4 +3,6 @@ export interface ProgressResultDto {
   completedChapters: number;
   totalChapters: number;
   completedChapterIds: number[];
+  lastActivityAt?: Date;
+  finishedAt?: Date | null;
 }

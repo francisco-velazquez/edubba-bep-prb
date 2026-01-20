@@ -6,6 +6,10 @@ export interface IProgressRepositoryPort {
   ): Promise<number[]>;
   countTotalChaptersInSubject(subjectId: number): Promise<number>;
   isChapterCompleted(userId: string, chapterId: number): Promise<boolean>;
+  getSubjectStatus(
+    userId: string,
+    subjectId: number,
+  ): Promise<{ lastActivityAt: Date; finishedAt: Date | null }>;
 
   updateSubjectStatus(
     userId: string,

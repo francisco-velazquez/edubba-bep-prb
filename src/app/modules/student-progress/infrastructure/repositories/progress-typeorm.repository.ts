@@ -55,6 +55,24 @@ export class ProgressTypeOrmRepository implements IProgressRepositoryPort {
     return count > 0;
   }
 
+  async getSubjectStatus(
+    userId: string,
+    subjectId: number,
+  ): Promise<{ lastActivityAt: Date; finishedAt: Date | null }> {
+    const status = await this.statusRepo.findOne({
+      where: { userId, subjectId },
+    });
+
+    if (!status) {
+      return { lastActivityAt: new Date(), finishedAt: null };
+    }
+
+    return {
+      lastActivityAt: status.lastActivityAt,
+      finishedAt: status.finishedAt,
+    };
+  }
+
   async updateSubjectStatus(
     userId: string,
     subjectId: number,

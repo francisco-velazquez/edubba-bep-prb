@@ -24,11 +24,19 @@ export class CalculateSubjectProgressUseCase {
         ? Math.round((completedCount / totalChapters) * 100)
         : 0;
 
+    // Obtener el subject status para saber cuando fue el último acceso o cuando se finalizó el curso
+    const subjectStatus = await this.progressRepository.getSubjectStatus(
+      userId,
+      subjectId,
+    );
+
     const result: ProgressResultDto = {
       percentage,
       completedChapters: completedCount,
       totalChapters,
       completedChapterIds: completedIds,
+      lastActivityAt: subjectStatus.lastActivityAt,
+      finishedAt: subjectStatus.finishedAt,
     };
 
     return result;
