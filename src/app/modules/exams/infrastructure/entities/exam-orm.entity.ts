@@ -1,31 +1,41 @@
 import {
-  Column,
   Entity,
-  JoinColumn,
-  ManyToOne,
   PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
-import { ModuleOrmEntity } from 'src/app/modules/modules/infrastructure/entities/module-orm.entity';
 
 @Entity('exams')
 export class ExamOrmEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn() id: number;
+  @Column() title: string;
+  @Column({ name: 'module_id' }) moduleId: number;
+  @OneToMany(() => QuestionOrmEntity, (q) => q.exam, { cascade: true })
+  questions: QuestionOrmEntity[];
+}
 
-  @Column({ type: 'varchar' })
-  title: string;
+@Entity('questions')
+export class QuestionOrmEntity {
+  @PrimaryGeneratedColumn() id: number;
+  @Column({ name: 'question_text', type: 'text' }) questionText: string;
+  @Column({ name: 'question_type' }) questionType:
+    | 'multiple_choice'
+    | 'true_false';
+  @ManyToOne(() => ExamOrmEntity, (e) => e.questions)
+  @JoinColumn({ name: 'exam_id' })
+  exam: ExamOrmEntity;
+  @OneToMany(() => OptionOrmEntity, (o) => o.question, { cascade: true })
+  options: OptionOrmEntity[];
+}
 
-  @Column({ name: 'module_id' })
-  moduleId: number;
-
-  // Relaciones
-
-  // 1:1 Un examen pertenece a un capitulo
-  @ManyToOne(() => ModuleOrmEntity, (module) => module.exams)
-  @JoinColumn({ name: 'module_id' })
-  module: ModuleOrmEntity;
-
-  // 1:N Un examen tiene muchas preguntas
-  // @OneToMany(() => QuestionOrmEntity, (question) => question.exam)
-  // questions: QuestionOrmEntity[];
+@Entity('options')
+export class OptionOrmEntity {
+  @PrimaryGeneratedColumn() id: number;
+  @Column({ name: 'option_text' }) optionText: string;
+  @Column({ name: 'is_correct', default: false }) isCorrect: boolean;
+  @ManyToOne(() => QuestionOrmEntity, (q) => q.options)
+  @JoinColumn({ name: 'question_id' })
+  question: QuestionOrmEntity;
 }

@@ -1,20 +1,37 @@
-import { ModuleResponseDto } from 'src/app/modules/modules/application/dtos/module-response.dto';
-import { Exam } from '../../domain/exam.entity';
+import { Exclude, Expose, Type } from 'class-transformer';
+import { Exam, StudentExam } from '../../domain/entities/exam.entity';
 
+export class OptionResponseDto {
+  @Expose() id: number;
+  @Expose() optionText: string;
+
+  // Solo exponemos isCorrect si el valor existe en el objeto original
+  // (Para alumnos será undefined y no se enviará en el JSON)
+  @Expose()
+  isCorrect?: boolean;
+}
+
+export class QuestionResponseDto {
+  @Expose() id: number;
+  @Expose() questionText: string;
+  @Expose() questionType: string;
+
+  @Expose()
+  @Type(() => OptionResponseDto)
+  options: OptionResponseDto[];
+}
+
+@Exclude() // Bloquea todas las propiedades que no tengan @Expose()
 export class ExamResponseDto {
-  id: number;
-  title: string;
-  moduleId: number;
+  @Expose() id: number;
+  @Expose() title: string;
+  @Expose() moduleId: number;
 
-  module?: ModuleResponseDto;
+  @Expose()
+  @Type(() => QuestionResponseDto)
+  questions: QuestionResponseDto[];
 
-  constructor(exam: Exam) {
-    this.id = exam.id;
-    this.title = exam.title;
-    this.moduleId = exam.moduleId;
-
-    if (exam.module) {
-      this.module = new ModuleResponseDto(exam.module);
-    }
+  constructor(partial: Exam | StudentExam) {
+    Object.assign(this, partial);
   }
 }

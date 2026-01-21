@@ -1,10 +1,10 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { I_EXAM_REPOSITORY } from '../../domain/exam.entity';
-import type { IExamRepositoryPort } from '../ports/exam-repository.port';
+import { I_EXAM_REPOSITORY } from '../../domain/entities/exam.entity';
+import type { IExamRepositoryPort } from '../../domain/ports/exam-repository.port';
 import { I_MODULE_REPOSITORY } from 'src/app/modules/modules/domain/module.entity';
 import type { IModuleRepositoryPort } from 'src/app/modules/modules/application/ports/module-repository.port';
 import { ExamResponseDto } from '../dtos/exam-response.dto';
-import { UpdateExamDto } from '../dtos/update-exam.dto';
+import { CreateExamDto } from '../dtos/create-exam.dto';
 
 @Injectable()
 export class UpdateExamUseCase {
@@ -15,29 +15,28 @@ export class UpdateExamUseCase {
     private readonly moduleRepository: IModuleRepositoryPort,
   ) {}
 
-  async execute(id: number, dto: UpdateExamDto): Promise<ExamResponseDto> {
-    // Verificamos que el módulo existe
-    const module = await this.moduleRepository.findById(dto.moduleId!);
-
-    if (!module) {
-      throw new NotFoundException(`Module with id ${dto.moduleId} not found`);
-    }
-
-    // Verificamos si ya existe un examen
+  async execute(
+    id: number,
+    dto: Partial<CreateExamDto>,
+  ): Promise<ExamResponseDto> {
+    // 1. Verificamos que el examen a actualizar existe
     const existingExam = await this.examRepository.findById(id);
-
     if (!existingExam) {
       throw new NotFoundException(`Exam with id ${id} not found`);
     }
-    // Actualizamos el examen
-    const updatedExam = {
-      ...existingExam,
-      ...dto,
-      updatedAt: new Date(),
-    };
 
-    const savedExam = await this.examRepository.save(updatedExam);
+    // 2. Si se intenta cambiar el módulo, verificamos que el nuevo módulo existe
+    if (dto.moduleId) {
+      const module = await this.moduleRepository.findById(dto.moduleId);
+      if (!module) {
+        throw new NotFoundException(`Module with id ${dto.moduleId} not found`);
+      }
+    }
 
-    return new ExamResponseDto(savedExam);
+    // 3. Actualizamos el examen en el repositorio
+    const updatedExam = await this.examRepository.updateFullExam(id, dto);
+
+    // 4. Retornamos el DTO instanciado
+    return new ExamResponseDto(updatedExam);
   }
 }

@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -21,9 +22,18 @@ import { FindExamByModuleUseCase } from '../../application/use-cases/find-exam-b
 import { FindExamByIdUseCase } from '../../application/use-cases/find-exam-by-id.use-case';
 import { UpdateExamUseCase } from '../../application/use-cases/update-exam.use-case';
 import { DeleteExamUseCase } from '../../application/use-cases/delete-exam.use-case';
+import { SubmitExamUseCase } from '../../application/use-cases/submit-exam.use-case';
+import { GetLastAttemptUseCase } from '../../application/use-cases/get-last-attempt.use-case';
 import { CreateExamDto } from '../../application/dtos/create-exam.dto';
 import { ExamResponseDto } from '../../application/dtos/exam-response.dto';
 import { UpdateExamDto } from '../../application/dtos/update-exam.dto';
+import { SubmitExamDto } from '../../application/dtos/submit-exam.dto';
+import { ActiveUser } from 'src/app/modules/auth/infrastructure/interfaces/active-user.interface';
+
+// Creamos un tipo que extienda el Request de Express
+interface RequestWithUser extends Request {
+  user: ActiveUser;
+}
 
 @ApiTags('exams')
 @Controller('exams')
@@ -32,14 +42,18 @@ export class ExamsController {
   constructor(
     private readonly createUseCase: CreateExamUseCase,
     private readonly findByModuleUseCase: FindExamByModuleUseCase,
-    private readonly findByIdUseCase: FindExamByIdUseCase, // Asumiendo que existe
-    private readonly updateUseCase: UpdateExamUseCase, // Asumiendo que existe
-    private readonly deleteUseCase: DeleteExamUseCase, // Asumiendo que existe
+    private readonly findByIdUseCase: FindExamByIdUseCase,
+    private readonly updateUseCase: UpdateExamUseCase,
+    private readonly deleteUseCase: DeleteExamUseCase,
+    private readonly submitExamUseCase: SubmitExamUseCase,
+    private readonly getLastAttemptUseCase: GetLastAttemptUseCase,
   ) {}
+
+  // --- ACCIONES DE MAESTRO/ADMIN ---
 
   @Post()
   @Roles(UserRole.ADMIN, UserRole.TEACHER)
-  @ApiOperation({ summary: 'Crea un nuevo examen (máximo uno por capítulo)' })
+  @ApiOperation({ summary: 'Crea un nuevo examen (máximo uno por módulo)' })
   async create(@Body() dto: CreateExamDto): Promise<ExamResponseDto> {
     return this.createUseCase.execute(dto);
   }
@@ -62,22 +76,51 @@ export class ExamsController {
     await this.deleteUseCase.execute(id);
   }
 
-  // --- BUSQUEDA ---
+  // --- BÚSQUEDA (Híbrida: Maestro ve todo, Alumno ve ofuscado) ---
+
   @Get(':id')
   @Roles(UserRole.ADMIN, UserRole.TEACHER, UserRole.STUDENT)
   @ApiOperation({ summary: 'Obtiene un examen por ID' })
   async findById(
+    @Req() req: RequestWithUser,
     @Param('id', ParseIntPipe) id: number,
   ): Promise<ExamResponseDto> {
-    return this.findByIdUseCase.execute(id);
+    // Pasamos el rol extraído del JWT para la lógica de ofuscación
+    return this.findByIdUseCase.execute(id, req.user.role);
   }
 
   @Get('by-module/:moduleId')
   @Roles(UserRole.ADMIN, UserRole.TEACHER, UserRole.STUDENT)
   @ApiOperation({ summary: 'Obtiene el examen asociado a un módulo' })
   async findByModule(
+    @Req() req: RequestWithUser,
     @Param('moduleId', ParseIntPipe) moduleId: number,
   ): Promise<ExamResponseDto> {
-    return this.findByModuleUseCase.execute(moduleId);
+    return this.findByModuleUseCase.execute(moduleId, req.user.role);
+  }
+
+  // --- ACCIONES DE ALUMNO ---
+
+  @Post(':id/submit')
+  @Roles(UserRole.STUDENT)
+  @ApiOperation({ summary: 'Envía las respuestas de un examen para calificar' })
+  async submit(
+    @Req() req: RequestWithUser,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: SubmitExamDto,
+  ) {
+    return this.submitExamUseCase.execute(req.user.id, id, dto);
+  }
+
+  @Get(':id/last-attempt')
+  @Roles(UserRole.STUDENT)
+  @ApiOperation({
+    summary: 'Obtiene el último resultado del alumno en este examen',
+  })
+  async getLastAttempt(
+    @Req() req: RequestWithUser,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.getLastAttemptUseCase.execute(req.user.id, id);
   }
 }

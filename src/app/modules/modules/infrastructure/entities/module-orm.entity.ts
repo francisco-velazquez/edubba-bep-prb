@@ -46,6 +46,6 @@ export class ModuleOrmEntity {
   chapters: ChapterOrmEntity[];
 
   //TODO: 1:N Un capítulo puede tener muchos examenes
-  @OneToMany(() => ExamOrmEntity, (exam) => exam.module)
-  exams: ExamOrmEntity;
+  @OneToMany(() => ExamOrmEntity, (exam: ExamOrmEntity) => exam.moduleId)
+  exams: ExamOrmEntity[];
 }

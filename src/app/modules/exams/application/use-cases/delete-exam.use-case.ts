@@ -1,6 +1,6 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { I_EXAM_REPOSITORY } from '../../domain/exam.entity';
-import type { IExamRepositoryPort } from '../ports/exam-repository.port';
+import { I_EXAM_REPOSITORY } from '../../domain/entities/exam.entity';
+import type { IExamRepositoryPort } from '../../domain/ports/exam-repository.port';
 
 @Injectable()
 export class DeleteExamUseCase {
@@ -16,7 +16,7 @@ export class DeleteExamUseCase {
       throw new NotFoundException(`Exam with id ${id} not found`);
     }
 
-    await this.examRepository.delete(id);
+    await this.examRepository.deleteExam(id);
 
     return true;
   }
