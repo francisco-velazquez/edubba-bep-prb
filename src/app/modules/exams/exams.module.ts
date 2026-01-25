@@ -18,6 +18,7 @@ import { FindExamByModuleUseCase } from './application/use-cases/find-exam-by-mo
 import { ExamAttemptOrmEntity } from './infrastructure/entities/exam-attempt-orm.entity';
 import { SubmitExamUseCase } from './application/use-cases/submit-exam.use-case';
 import { GetLastAttemptUseCase } from './application/use-cases/get-last-attempt.use-case';
+import { FindExamsBySubjectUseCase } from './application/use-cases/find-exams-by-subject.use-case';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { GetLastAttemptUseCase } from './application/use-cases/get-last-attempt.
     DeleteExamUseCase,
     SubmitExamUseCase,
     GetLastAttemptUseCase,
+    FindExamsBySubjectUseCase,
     {
       provide: I_EXAM_REPOSITORY,
       useClass: ExamTypeOrmRepository,

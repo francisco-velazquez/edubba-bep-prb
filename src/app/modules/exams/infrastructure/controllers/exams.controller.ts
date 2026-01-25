@@ -29,6 +29,7 @@ import { ExamResponseDto } from '../../application/dtos/exam-response.dto';
 import { UpdateExamDto } from '../../application/dtos/update-exam.dto';
 import { SubmitExamDto } from '../../application/dtos/submit-exam.dto';
 import { ActiveUser } from 'src/app/modules/auth/infrastructure/interfaces/active-user.interface';
+import { FindExamsBySubjectUseCase } from '../../application/use-cases/find-exams-by-subject.use-case';
 
 // Creamos un tipo que extienda el Request de Express
 interface RequestWithUser extends Request {
@@ -47,6 +48,7 @@ export class ExamsController {
     private readonly deleteUseCase: DeleteExamUseCase,
     private readonly submitExamUseCase: SubmitExamUseCase,
     private readonly getLastAttemptUseCase: GetLastAttemptUseCase,
+    private readonly findExamsBySubjectUseCase: FindExamsBySubjectUseCase,
   ) {}
 
   // --- ACCIONES DE MAESTRO/ADMIN ---
@@ -122,5 +124,20 @@ export class ExamsController {
     @Param('id', ParseIntPipe) id: number,
   ) {
     return this.getLastAttemptUseCase.execute(req.user.id, id);
+  }
+
+  @Get('by-subject/:subjectId')
+  @Roles(UserRole.ADMIN, UserRole.TEACHER, UserRole.STUDENT)
+  @ApiOperation({
+    summary: 'Obtiene todos los exámenes de una asignatura específica',
+  })
+  async findBySubject(
+    @Req() req: RequestWithUser,
+    @Param('subjectId', ParseIntPipe) subjectId: number,
+  ): Promise<ExamResponseDto[]> {
+    return await this.findExamsBySubjectUseCase.execute(
+      subjectId,
+      req.user.role,
+    );
   }
 }

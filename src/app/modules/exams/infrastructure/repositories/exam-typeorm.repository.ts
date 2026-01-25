@@ -91,4 +91,16 @@ export class ExamTypeOrmRepository implements IExamRepositoryPort {
     // al eliminar el examen se eliminan preguntas y opciones automáticamente.
     await this.examRepo.delete(examId);
   }
+
+  async findBySubjectId(subjectId: number): Promise<Exam[]> {
+    const exams = await this.examRepo
+      .createQueryBuilder('exam')
+      .innerJoinAndSelect('exam.questions', 'question')
+      .innerJoinAndSelect('question.options', 'option')
+      .innerJoin('modules', 'module', 'module.id = exam.module_id')
+      .where('module.subject_id = :subjectId', { subjectId })
+      .getMany();
+
+    return exams as unknown as Exam[];
+  }
 }

@@ -9,4 +9,5 @@ export interface IExamRepositoryPort {
   findLastAttempt(userId: string, examId: number): Promise<ExamAttempt | null>;
   updateFullExam(examId: number, data: Partial<CreateExamDto>): Promise<Exam>;
   deleteExam(examId: number): Promise<void>;
+  findBySubjectId(subjectId: number): Promise<Exam[]>;
 }
