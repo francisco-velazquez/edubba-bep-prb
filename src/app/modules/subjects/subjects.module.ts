@@ -12,6 +12,8 @@ import { DeleteSubjectUseCase } from './application/use-cases/delete-subject.use
 import { I_SUBJECT_REPOSITORY } from './domain/subject.entity';
 import { SubjectTypeOrmRepository } from './infrastructure/providers/subject-typeorm.repository';
 import { ModuleOrmEntity } from '../modules/infrastructure/entities/module-orm.entity';
+import { TeachersModule } from '../teachers/teachers.module';
+import { FindSubjectByTeacherUseCase } from './application/use-cases/find-subject-by-teacher.use-case';
 
 @Module({
   imports: [
@@ -21,6 +23,7 @@ import { ModuleOrmEntity } from '../modules/infrastructure/entities/module-orm.e
       ModuleOrmEntity,
     ]),
     AuthModule,
+    TeachersModule,
   ],
   controllers: [SubjectsController],
   providers: [
@@ -29,6 +32,7 @@ import { ModuleOrmEntity } from '../modules/infrastructure/entities/module-orm.e
     FindSubjectByIdUseCase,
     UpdateSubjectUseCase,
     DeleteSubjectUseCase,
+    FindSubjectByTeacherUseCase,
     {
       provide: I_SUBJECT_REPOSITORY,
       useClass: SubjectTypeOrmRepository,

@@ -30,6 +30,7 @@ import { UpdateExamDto } from '../../application/dtos/update-exam.dto';
 import { SubmitExamDto } from '../../application/dtos/submit-exam.dto';
 import { ActiveUser } from 'src/app/modules/auth/infrastructure/interfaces/active-user.interface';
 import { FindExamsBySubjectUseCase } from '../../application/use-cases/find-exams-by-subject.use-case';
+import { FindExamsByTeacherUseCase } from '../../application/use-cases/find-exam-by-teacher.use-case';
 
 // Creamos un tipo que extienda el Request de Express
 interface RequestWithUser extends Request {
@@ -49,7 +50,17 @@ export class ExamsController {
     private readonly submitExamUseCase: SubmitExamUseCase,
     private readonly getLastAttemptUseCase: GetLastAttemptUseCase,
     private readonly findExamsBySubjectUseCase: FindExamsBySubjectUseCase,
+    private readonly findExamsByTeacherUseCase: FindExamsByTeacherUseCase,
   ) {}
+
+  @Get('by-teacher')
+  @Roles(UserRole.ADMIN, UserRole.TEACHER)
+  @ApiOperation({ summary: 'Obtiene todos los exámenes (sin ofuscación)' })
+  async findByTeacher(@Req() req: RequestWithUser): Promise<ExamResponseDto[]> {
+    // Esta acción es solo para maestros y administradores, por lo que no hay ofuscación
+    console.log('ExamsController: findAll called by user ID:', req.user.id);
+    return await this.findExamsByTeacherUseCase.execute(req.user.id);
+  }
 
   // --- ACCIONES DE MAESTRO/ADMIN ---
 

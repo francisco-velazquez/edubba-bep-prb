@@ -1,5 +1,10 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { I_EXAM_REPOSITORY, StudentExam, StudentOption, StudentQuestion } from '../../domain/entities/exam.entity';
+import {
+  I_EXAM_REPOSITORY,
+  StudentExam,
+  StudentOption,
+  StudentQuestion,
+} from '../../domain/entities/exam.entity';
 import type { IExamRepositoryPort } from '../../domain/ports/exam-repository.port';
 import { ExamResponseDto } from '../dtos/exam-response.dto';
 

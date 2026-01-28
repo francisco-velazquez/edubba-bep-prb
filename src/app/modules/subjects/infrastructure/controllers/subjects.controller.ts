@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -24,6 +25,13 @@ import { CreateSubjectDto } from '../../application/dtos/create-subject.dto';
 import { SubjectResponseDto } from '../../application/dtos/subject-response.dto';
 import { UserRole } from 'src/common/enums/user-role.enum';
 import { UpdateSubjectDto } from '../../application/dtos/update-subject.dto';
+import { ActiveUser } from 'src/app/modules/auth/infrastructure/interfaces/active-user.interface';
+import { FindSubjectByTeacherUseCase } from '../../application/use-cases/find-subject-by-teacher.use-case';
+
+// Creamos un tipo que extienda el Request de Express
+interface RequestWithUser extends Request {
+  user: ActiveUser;
+}
 
 @ApiTags('subjects')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -35,6 +43,7 @@ export class SubjectsController {
     private readonly findByIdUseCase: FindSubjectByIdUseCase,
     private readonly updateUseCase: UpdateSubjectUseCase,
     private readonly deleteUseCase: DeleteSubjectUseCase,
+    private readonly findSubjectByTeacherUseCase: FindSubjectByTeacherUseCase,
   ) {}
 
   @Post()
@@ -49,6 +58,15 @@ export class SubjectsController {
   @ApiOperation({ summary: 'Listar todas las asignaturas activas' })
   async findAll(): Promise<SubjectResponseDto[]> {
     return this.findAllUseCase.execute();
+  }
+
+  @Get('by-teacher')
+  @Roles(UserRole.TEACHER)
+  @ApiOperation({ summary: 'Listar asignaturas del profesor autenticado' })
+  async findAllByTeacher(
+    @Req() req: RequestWithUser,
+  ): Promise<SubjectResponseDto[]> {
+    return this.findSubjectByTeacherUseCase.execute(req.user.id);
   }
 
   @Get(':id')

@@ -19,6 +19,8 @@ import { ExamAttemptOrmEntity } from './infrastructure/entities/exam-attempt-orm
 import { SubmitExamUseCase } from './application/use-cases/submit-exam.use-case';
 import { GetLastAttemptUseCase } from './application/use-cases/get-last-attempt.use-case';
 import { FindExamsBySubjectUseCase } from './application/use-cases/find-exams-by-subject.use-case';
+import { FindExamsByTeacherUseCase } from './application/use-cases/find-exam-by-teacher.use-case';
+import { TeachersModule } from '../teachers/teachers.module';
 
 @Module({
   imports: [
@@ -30,6 +32,7 @@ import { FindExamsBySubjectUseCase } from './application/use-cases/find-exams-by
     ]),
     AuthModule,
     ModulesModule,
+    TeachersModule,
   ],
   controllers: [ExamsController],
   providers: [
@@ -41,6 +44,7 @@ import { FindExamsBySubjectUseCase } from './application/use-cases/find-exams-by
     SubmitExamUseCase,
     GetLastAttemptUseCase,
     FindExamsBySubjectUseCase,
+    FindExamsByTeacherUseCase,
     {
       provide: I_EXAM_REPOSITORY,
       useClass: ExamTypeOrmRepository,
