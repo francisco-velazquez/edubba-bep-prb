@@ -22,13 +22,24 @@ export class FindSubjectByTeacherUseCase {
     }
 
     // Obtenemos las asignaturas asociadas al maestro
-    const subjects = teacher.subjects;
+    const subjectIds = teacher.subjects.map((subject) => subject.id);
+
+    const subjectsPromises = subjectIds.map((id) =>
+      this.subjectRepository.findById(id),
+    );
+
+    // Esperamos a que se resuelvan todas las promesas
+    const subjects = await Promise.all(subjectsPromises);
 
     if (!subjects || subjects.length === 0) {
       return [];
     }
 
     // Mapeamos cada asignatura a su DTO correspondiente
-    return subjects.map((subject) => new SubjectResponseDto(subject));
+    const subjectDtos = subjects.map(
+      (subject) => new SubjectResponseDto(subject!),
+    );
+
+    return subjectDtos;
   }
 }
